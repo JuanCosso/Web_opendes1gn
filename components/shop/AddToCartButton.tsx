@@ -39,22 +39,28 @@ export function AddToCartButton({ product }: { product: Product }) {
     setTimeout(() => setAdded(false), 2000);
   }
 
-  return (
-    <div className="flex flex-col gap-4 mt-2">
+  const chipClass = (active: boolean) =>
+    `px-4 py-2.5 text-[11px] tracking-[2px] uppercase rounded-[var(--radius-sm)] transition-all duration-300 hover:-translate-y-0.5 ${
+      active
+        ? "bg-[var(--text)] text-[var(--cream)] hover:bg-[var(--accent)]"
+        : "bg-transparent border border-[var(--border)] text-[var(--text-light)] hover:border-[var(--accent)] hover:text-[var(--text)]"
+    }`;
 
+  return (
+    <div className="flex flex-col gap-6">
       {sizes.length > 0 && (
         <div>
-          <p className="text-sm font-medium mb-2">Talle</p>
-          <div className="flex gap-2 flex-wrap">
+          <p className="text-[11px] tracking-[3px] uppercase text-[var(--text-light)] mb-3">Talle</p>
+          <div className="flex flex-wrap gap-2">
             {sizes.map((size) => {
               const variant = product.variants.find((v) => v.size === size);
               const active = selectedVariant?.size === size;
               return (
                 <button
                   key={size}
+                  type="button"
                   onClick={() => variant && setSelectedVariant(variant)}
-                  className={`border px-3 py-1.5 text-sm rounded transition-colors
-                    ${active ? "bg-black text-white border-black" : "border-gray-200 hover:border-black"}`}
+                  className={chipClass(active)}
                 >
                   {size}
                 </button>
@@ -66,17 +72,17 @@ export function AddToCartButton({ product }: { product: Product }) {
 
       {colors.length > 0 && (
         <div>
-          <p className="text-sm font-medium mb-2">Color</p>
-          <div className="flex gap-2 flex-wrap">
+          <p className="text-[11px] tracking-[3px] uppercase text-[var(--text-light)] mb-3">Color</p>
+          <div className="flex flex-wrap gap-2">
             {colors.map((color) => {
               const variant = product.variants.find((v) => v.color === color);
               const active = selectedVariant?.color === color;
               return (
                 <button
                   key={color}
+                  type="button"
                   onClick={() => variant && setSelectedVariant(variant)}
-                  className={`border px-3 py-1.5 text-sm rounded transition-colors
-                    ${active ? "bg-black text-white border-black" : "border-gray-200 hover:border-black"}`}
+                  className={chipClass(active)}
                 >
                   {color}
                 </button>
@@ -87,13 +93,16 @@ export function AddToCartButton({ product }: { product: Product }) {
       )}
 
       <button
+        type="button"
         onClick={handleAdd}
-        className={`w-full py-3 rounded text-sm font-medium transition-colors
-          ${added ? "bg-green-600 text-white" : "bg-black text-white hover:bg-gray-800"}`}
+        className={`w-full py-4 text-[12px] tracking-[3px] uppercase transition-all duration-300 ${
+          added
+            ? "bg-[var(--accent)] text-[var(--white)] cursor-default"
+            : "btn-primary"
+        }`}
       >
         {added ? "✓ Agregado al carrito" : "Agregar al carrito"}
       </button>
-
     </div>
   );
 }

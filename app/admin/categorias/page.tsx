@@ -8,37 +8,42 @@ export default async function CategoriasAdminPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-end justify-between mb-10">
         <div>
-          <h1 className="text-2xl font-bold">Categorías</h1>
-          <p className="text-sm text-gray-400 mt-1">{categories.length} categorías</p>
+          <p className="text-[10px] tracking-[0.28em] uppercase text-[var(--text-light)] mb-2">Gestión</p>
+          <h1 className="text-3xl sm:text-4xl font-light text-[var(--text)] italic" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            Categorías
+          </h1>
         </div>
-        <Link href="/admin/categorias/nueva" className="bg-black text-white text-sm px-4 py-2 rounded hover:bg-gray-800 transition-colors">
+        <Link
+          href="/admin/categorias/nueva"
+          className="px-5 py-2.5 bg-[var(--cta)] text-[var(--bg)] text-[11px] tracking-[0.15em] uppercase hover:bg-[var(--cta-hover)] transition-colors rounded-[var(--radius-sm)]"
+        >
           + Nueva categoría
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+      <div className="bg-[var(--white)] border border-[var(--border)] rounded-[var(--radius)] overflow-hidden">
         {categories.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">
-            <p className="text-sm">No hay categorías todavía.</p>
-            <Link href="/admin/categorias/nueva" className="text-black underline text-sm mt-2 inline-block">
+          <div className="text-center py-16">
+            <p className="text-[var(--text-light)] text-[13px] mb-4">No hay categorías todavía.</p>
+            <Link href="/admin/categorias/nueva" className="text-[11px] tracking-[3px] uppercase text-[var(--accent)] hover:text-[var(--text)] transition-colors duration-300">
               Crear la primera
             </Link>
           </div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="border-b border-gray-100">
+          <table className="w-full text-[12px]">
+            <thead className="border-b border-[var(--border)]">
               <tr>
-                <th className="text-left px-6 py-3 text-xs uppercase tracking-widest text-gray-400">Nombre</th>
-                <th className="text-left px-6 py-3 text-xs uppercase tracking-widest text-gray-400">Slug</th>
+                <th className="text-left px-5 py-4 tracking-[0.14em] uppercase text-[var(--text-light)] font-normal">Nombre</th>
+                <th className="text-left px-5 py-4 tracking-[0.14em] uppercase text-[var(--text-light)] font-normal">Slug</th>
               </tr>
             </thead>
             <tbody>
               {categories.map((cat) => (
-                <tr key={cat.id} className="border-b border-gray-50 hover:bg-gray-50">
-                  <td className="px-6 py-4 font-medium">{cat.name}</td>
-                  <td className="px-6 py-4 text-gray-400">{cat.slug}</td>
+                <tr key={cat.id} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--blush)]/30 transition-colors">
+                  <td className="px-5 py-4 font-light text-[var(--text)]">{cat.name}</td>
+                  <td className="px-5 py-4 text-[var(--text-light)]">{cat.slug}</td>
                 </tr>
               ))}
             </tbody>

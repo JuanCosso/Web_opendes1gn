@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alma Bohemia | Ropa Boho Chic Reciclada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Paleta de colores Boho Chic */
+        :root {
+            --bg-color: #FAF6F0; /* Beige claro */
+            --text-color: #4A3F35; /* Marrón oscuro */
+            --accent-color: #C17767; /* Terracota */
+            --secondary-color: #8C9A81; /* Verde Salvia */
+            --nav-bg: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, .logo {
+            font-family: 'Lora', serif;
+        }
+
+        /* Navbar */
+        header {
+            background-color: var(--nav-bg);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Hero / Introducción */
+        .hero {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: linear-gradient(rgba(250, 246, 240, 0.9), rgba(250, 246, 240, 0.9)), url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80') center/cover;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .hero p {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        /* Personalizados - WhatsApp */
+        .custom-order {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .custom-order h2 {
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: background 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            background-color: #a86253;
+        }
+
+        /* Productos */
+        .products-section {
+            padding: 4rem 5%;
+        }
+
+        .products-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .product-price {
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        /* Modales (Ventanas emergentes) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-content.large {
+            max-width: 800px;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        /* Detalles del producto en modal */
+        .product-details-img {
+            width: 50%;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        
+        .product-details-text {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .product-details-text h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-details-text ul {
+            list-style-type: none;
+            margin: 1rem 0;
+            padding: 0;
+        }
+
+        .product-details-text li {
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Inputs para Login */
+        .input-group {
+            margin-bottom: 1rem;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+
+        @media (max-width: 768px) {
+            .modal-content.large {
+                flex-direction: column;
+            }
+            .product-details-img, .product-details-text {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Alma Bohemia</div>
+        <nav>
+            <ul>
+                <li><a href="#productos">Productos</a></li>
+                <li><a onclick="openModal('login-modal')">Ingresar</a></li>
+                <li><a onclick="openModal('cart-modal')">Carrito (0)</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Renace con Estilo</h1>
+        <p>En Alma Bohemia creemos en las segundas oportunidades. Rescatamos prendas olvidadas y textiles vintage para transformarlos en piezas boho chic únicas, artesanales y llenas de historia. Vístete con libertad, consciencia y exclusividad.</p>
+    </section>
+
+    <section class="custom-order">
+        <h2>¿Quieres una prenda hecha a tu medida y estilo?</h2>
+        <p>Cuéntanos tu idea. Tomamos prendas que ya no uses o diseñamos desde cero con nuestros textiles reciclados para crear la pieza de tus sueños.</p>
+        <a href="https://wa.me/1234567890" target="_blank" class="btn">Encargar por WhatsApp</a>
+    </section>
+
+    <section id="productos" class="products-section">
+        <h2>Nuestra Colección Única</h2>
+        <div class="product-grid" id="product-container">
+            </div>
+    </section>
+
+    <footer>
+        <h2 style="font-family: 'Lora', serif; margin-bottom: 1rem;">Alma Bohemia</h2>
+        <p>Envíos a todo el país de forma rápida y segura.</p>
+        <p>Aceptamos todas las tarjetas, transferencias y MercadoPago.</p>
+        <p>Síguenos en Instagram: @almabohemia_upcycling</p>
+        <p style="margin-top: 2rem; opacity: 0.7;">© 2026 Alma Bohemia. Todos los derechos reservados.</p>
+    </footer>
+
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('login-modal')">&times;</span>
+            <h2 style="margin-bottom: 1.5rem; text-align: center;">Ingresa a tu cuenta</h2>
+            <div class="input-group">
+                <input type="email" placeholder="Correo electrónico">
+            </div>
+            <div class="input-group">
+                <input type="password" placeholder="Contraseña">
+            </div>
+            <button class="btn" style="width: 100%;" onclick="closeModal('login-modal')">Ingresar</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="cart-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('cart-modal')">&times;</span>
+            <h2 style="margin-bottom: 1.5rem;">Tu Carrito</h2>
+            <p style="text-align: center; margin-bottom: 2rem; color: #888;">Tu carrito está vacío por ahora.</p>
+            <button class="btn" style="width: 100%;" onclick="closeModal('cart-modal')">Seguir comprando</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="product-modal">
+        <div class="modal-content large">
+            <span class="close-btn" onclick="closeModal('product-modal')">&times;</span>
+            <img src="" alt="Producto" class="product-details-img" id="modal-img">
+            <div class="product-details-text">
+                <h3 id="modal-title">Nombre del Producto</h3>
+                <p class="product-price" id="modal-price">$0</p>
+                <ul id="modal-specs">
+                    </ul>
+                <p id="modal-desc" style="margin-bottom: 1.5rem; font-size: 0.9rem; color: #666;"></p>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn" style="flex: 1;" onclick="addToCart()">Añadir al Carrito</button>
+                </div>
+                <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--secondary-color);">* Envíos a todo el país. Medios de pago: Tarjetas y Transferencias.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de datos de productos (Simulada)
+        const productos = [
+            {
+                id: 1,
+                nombre: "Chaqueta Denim Patchwork",
+                precio: "$45.000",
+                imagen: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                talle: "Único (Oversize equivale a M/L)",
+                medidas: "Ancho: 55cm | Largo: 62cm",
+                materiales: "Denim 100% algodón reciclado, retazos florales de lino.",
+                descripcion: "Chaqueta vintage de los 90s intervenida a mano con retazos florales y bordados en la espalda. Una pieza que no pasará desapercibida."
+            },
+            {
+                id: 2,
+                nombre: "Vestido Tierra de Lino",
+                precio: "$38.000",
+                imagen: "https://images.unsplash.com/photo-1618932260643-eee4a2f652a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                talle: "S",
+                medidas: "Busto: 85cm | Largo: 120cm",
+                materiales: "Lino recuperado y teñido natural con corteza de árbol.",
+                descripcion: "Un vestido fluido y ligero, perfecto para el verano. Confeccionado a partir de lino recuperado, teñido con técnicas sostenibles."
+            },
+            {
+                id: 3,
+                nombre: "Camisa Boho Bordada",
+                precio: "$29.500",
+                imagen: "https://images.unsplash.com/photo-1564222256577-45e728f2c611?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                talle: "M",
+                medidas: "Hombros: 40cm | Largo: 58cm",
+                materiales: "Algodón orgánico y detalles en crochet.",
+                descripcion: "Camisa de base blanca rescatada, a la cual se le añadieron mangas estilo murciélago en crochet tejido a mano."
+            }
+        ];
+
+        // Función para renderizar los productos en la grilla
+        function renderProducts() {
+            const container = document.getElementById('product-container');
+            productos.forEach(prod => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.onclick = () => openProductModal(prod);
+                card.innerHTML = `
+                    <img src="${prod.imagen}" alt="${prod.nombre}" class="product-img">
+                    <div class="product-info">
+                        <h3>${prod.nombre}</h3>
+                        <p class="product-price">${prod.precio}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Funciones de las ventanas emergentes (Modales)
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function openProductModal(prod) {
+            document.getElementById('modal-img').src = prod.imagen;
+            document.getElementById('modal-title').textContent = prod.nombre;
+            document.getElementById('modal-price').textContent = prod.precio;
+            document.getElementById('modal-desc').textContent = prod.descripcion;
+            
+            document.getElementById('modal-specs').innerHTML = `
+                <li><strong>Talle:</strong> ${prod.talle}</li>
+                <li><strong>Medidas:</strong> ${prod.medidas}</li>
+                <li><strong>Materiales:</strong> ${prod.materiales}</li>
+            `;
+            
+            openModal('product-modal');
+        }
+
+        function addToCart() {
+            alert('¡Producto añadido al carrito con éxito!');
+            closeModal('product-modal');
+        }
+
+        // Cargar productos al iniciar la página
+        window.onload = renderProducts;
+
+        // Cerrar modales haciendo click afuera de la ventana
+        window.onclick = function(event) {
+            const modals = document.querySelectorAll('.modal-overlay');
+            modals.forEach(modal => {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

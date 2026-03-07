@@ -9,96 +9,140 @@ export default function CarritoPage() {
 
   if (items.length === 0) {
     return (
-      <main className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <p className="text-gray-400 text-lg mb-4">Tu carrito está vacío</p>
-        <Link href="/productos" className="bg-black text-white px-6 py-2 rounded text-sm hover:bg-gray-800 transition-colors">
-          Ver productos
-        </Link>
+      <main className="w-full min-h-screen bg-[var(--cream)] flex flex-col items-center justify-center">
+        <div className="container-center py-24 md:py-32 text-center">
+          <p
+            className="text-[clamp(1.75rem,3vw,2.25rem)] font-light italic text-[var(--text)] mb-4"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          >
+            Tu carrito está vacío
+          </p>
+          <p className="text-[15px] text-[var(--text-light)] mb-10 max-w-sm mx-auto">
+            Todavía no agregaste ningún producto.
+          </p>
+          <Link href="/productos" className="btn-primary">
+            Explorar productos
+          </Link>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="max-w-5xl mx-auto px-4 py-10">
-      <h1 className="text-2xl font-bold mb-8">Tu carrito ({count()} productos)</h1>
+    <main className="w-full min-h-screen bg-[var(--cream)]">
+      <div className="container-center py-14 md:py-24">
+        <h1
+          className="text-[clamp(1.75rem,3vw,2.25rem)] font-light text-[var(--text)] italic mb-4"
+          style={{ fontFamily: "'Cormorant Garamond', serif" }}
+        >
+          Tu carrito
+        </h1>
+        <p className="text-[14px] text-[var(--text-light)] mb-12">
+          {count()} {count() === 1 ? "pieza" : "piezas"}
+        </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
+          <div className="lg:col-span-2 space-y-6">
+            {items.map((item) => (
+              <div
+                key={`${item.productId}-${item.variantId}`}
+                className="flex gap-5 md:gap-6 bg-[var(--white)] border border-[var(--border)] p-5 md:p-6 rounded-[var(--radius)] card-hover"
+              >
+                <div className="w-20 h-28 md:w-24 md:h-32 bg-[var(--blush)] overflow-hidden flex-shrink-0 rounded-[var(--radius-sm)] relative">
+                  {item.image ? (
+                    <Image src={item.image} alt={item.name} fill className="object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="text-2xl text-[var(--rose)]/50 italic" style={{ fontFamily: "'Cormorant Garamond', serif" }}>O</span>
+                    </div>
+                  )}
+                </div>
 
-        {/* Items */}
-        <div className="md:col-span-2 space-y-4">
-          {items.map((item) => (
-            <div key={`${item.productId}-${item.variantId}`} className="flex gap-4 bg-white border border-gray-100 rounded-xl p-4">
-              <div className="w-20 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 relative">
-                {item.image ? (
-                  <Image src={item.image} alt={item.name} fill className="object-cover" />
-                ) : (
-                  <div className="w-full h-full bg-gray-100" />
-                )}
-              </div>
-
-              <div className="flex-1">
-                <Link href={`/productos/${item.slug}`} className="font-medium text-sm hover:underline">
-                  {item.name}
-                </Link>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  {[item.size, item.color].filter(Boolean).join(" · ")}
-                </p>
-                <p className="font-semibold text-sm mt-1">
-                  ${Number(item.price).toLocaleString("es-AR")}
-                </p>
-
-                <div className="flex items-center gap-3 mt-3">
-                  <div className="flex items-center border rounded overflow-hidden">
-                    <button
-                      onClick={() => updateQuantity(item.productId, item.variantId, item.quantity - 1)}
-                      className="px-2 py-1 text-sm hover:bg-gray-50 transition-colors"
-                    >−</button>
-                    <span className="px-3 py-1 text-sm border-x">{item.quantity}</span>
-                    <button
-                      onClick={() => updateQuantity(item.productId, item.variantId, item.quantity + 1)}
-                      className="px-2 py-1 text-sm hover:bg-gray-50 transition-colors"
-                    >+</button>
-                  </div>
-                  <button
-                    onClick={() => removeItem(item.productId, item.variantId)}
-                    className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+                <div className="flex-1 min-w-0">
+                  <Link
+                    href={`/productos/${item.slug}`}
+                    className="text-[18px] font-normal text-[var(--text)] hover:text-[var(--accent)] transition-colors duration-300 leading-tight block mb-1"
+                    style={{ fontFamily: "'Cormorant Garamond', serif" }}
                   >
-                    Eliminar
-                  </button>
+                    {item.name}
+                  </Link>
+                  <p className="text-[12px] text-[var(--text-light)] mb-2">
+                    {[item.size, item.color].filter(Boolean).join(" · ") || "—"}
+                  </p>
+                  <p className="text-[16px] font-medium text-[var(--accent)] mb-4">
+                    ${Number(item.price).toLocaleString("es-AR")}
+                  </p>
+
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center border border-[var(--border)] rounded-[var(--radius-sm)] overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.productId, item.variantId, item.quantity - 1)}
+                        className="w-9 h-9 flex items-center justify-center text-[var(--text-light)] hover:bg-[var(--blush)] hover:text-[var(--text)] transition-colors duration-300"
+                      >
+                        −
+                      </button>
+                      <span className="w-9 h-9 flex items-center justify-center text-[12px] text-[var(--text)] border-x border-[var(--border)]">
+                        {item.quantity}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.productId, item.variantId, item.quantity + 1)}
+                        className="w-9 h-9 flex items-center justify-center text-[var(--text-light)] hover:bg-[var(--blush)] hover:text-[var(--text)] transition-colors duration-300"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeItem(item.productId, item.variantId)}
+                      className="text-[11px] tracking-[2px] uppercase text-[var(--text-light)] hover:text-[var(--text)] transition-colors duration-300"
+                    >
+                      Quitar
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Resumen */}
-        <div className="bg-white border border-gray-100 rounded-xl p-6 h-fit sticky top-20">
-          <h2 className="font-semibold mb-4">Resumen</h2>
-          <div className="space-y-2 text-sm text-gray-600 mb-4">
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span>${total().toLocaleString("es-AR")}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Envío</span>
-              <span className="text-gray-400">Se calcula al pagar</span>
-            </div>
+            ))}
           </div>
-          <div className="border-t pt-4 flex justify-between font-bold text-sm mb-6">
-            <span>Total</span>
-            <span>${total().toLocaleString("es-AR")}</span>
-          </div>
-          <Link
-            href="/checkout"
-            className="w-full bg-black text-white py-3 rounded text-sm font-medium hover:bg-gray-800 transition-colors text-center block"
-          >
-            Finalizar compra →
-          </Link>
-          <Link href="/productos" className="block text-center text-xs text-gray-400 hover:text-black mt-3 transition-colors">
-            Seguir comprando
-          </Link>
-        </div>
 
+          <div className="lg:sticky lg:top-24 h-fit bg-[var(--blush)]/50 border border-[var(--border)] rounded-[var(--radius)] p-6 md:p-8">
+            <h2
+              className="text-[22px] font-normal text-[var(--text)] mb-6"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            >
+              Resumen
+            </h2>
+            <div className="space-y-3 text-[13px] text-[var(--text-light)] mb-6">
+              <div className="flex justify-between">
+                <span className="uppercase tracking-[2px]">Subtotal</span>
+                <span className="text-[var(--text)]">${total().toLocaleString("es-AR")}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="uppercase tracking-[2px]">Envío</span>
+                <span className="italic">Se calcula al pagar</span>
+              </div>
+            </div>
+            <div className="border-t border-[var(--border)] pt-5 flex justify-between items-center mb-6">
+              <span className="text-[12px] tracking-[2px] uppercase text-[var(--text)]">Total</span>
+              <span
+                className="text-[28px] font-light text-[var(--text)]"
+                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+              >
+                ${total().toLocaleString("es-AR")}
+              </span>
+            </div>
+            <Link href="/checkout" className="btn-primary block w-full text-center py-4">
+              Finalizar compra
+            </Link>
+            <Link
+              href="/productos"
+              className="block text-center text-[12px] tracking-[2px] uppercase text-[var(--text-light)] hover:text-[var(--text)] mt-5 transition-colors duration-300"
+            >
+              Seguir comprando
+            </Link>
+          </div>
+        </div>
       </div>
     </main>
   );

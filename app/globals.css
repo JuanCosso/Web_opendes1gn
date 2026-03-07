@@ -1,6 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
 @import "tailwindcss";
 
-* {
+/* Paleta referencia ÚNICA — marrones y cremas claros */
+:root {
+  --cream: #fdf8f4;
+  --blush: #f5e6e0;
+  --rose: #e8c9c1;
+  --butter: #f7f0dc;
+  --sand: #ebe0d6;
+  --tan: #e2d5ca;
+  --text: #2d2522;
+  --text-light: #8c7b76;
+  --accent: #c9a89a;
+  --accent2: #9b8ec4;
+  --white: #fff;
+  --border: rgba(201, 168, 154, 0.25);
+  --border-strong: rgba(201, 168, 154, 0.4);
+  --radius: 6px;
+  --radius-sm: 4px;
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -11,14 +34,190 @@ html {
 }
 
 body {
-  background: #ffffff;
-  color: #111111;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--cream);
+  color: var(--text);
   overflow-x: hidden;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
 }
 
+h1, h2, h3, h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+/* Contenedor centrado estándar */
+.container-center {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+@media (min-width: 768px) {
+  .container-center {
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-center {
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+}
+
+/* Animaciones */
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
 
-.animate-marquee { animation: marquee 24s linear infinite; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+.animate-fadeUp {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.7s var(--ease) forwards;
+}
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Botones referencia */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--text);
+  color: var(--cream);
+  border: none;
+  padding: 16px 36px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s var(--ease);
+}
+
+.btn-primary:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--text-light);
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.btn-ghost:hover {
+  color: var(--text);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  padding: 14px 28px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, transform 0.2s var(--ease);
+}
+
+.btn-secondary:hover {
+  background: var(--text);
+  color: var(--cream);
+  transform: translateY(-2px);
+}
+
+/* Cards hover */
+.card-hover {
+  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(45, 37, 34, 0.1);
+}
+
+input, textarea, select {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  transition: border-color 0.3s, box-shadow 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(201, 168, 154, 0.2);
+}
+
+::selection {
+  background: rgba(201, 168, 154, 0.3);
+  color: var(--text);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-light);
+}

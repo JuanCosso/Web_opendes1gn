@@ -1,38 +1,50 @@
 import Link from "next/link";
-import Image from "next/image";
 
 export function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-100 mt-20">
-      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-10">
+    <footer className="w-full mt-auto bg-[var(--text)] text-[var(--cream)] border-t border-[var(--border)]">
+      <div className="container-center py-[60px] md:py-[80px]">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-12 md:gap-16 mb-14 md:mb-16">
+          <div className="sm:col-span-2 max-w-md">
+            <p
+              className="mb-5 font-light tracking-[6px] uppercase text-[var(--cream)]"
+              style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px" }}
+            >
+              Tienda
+            </p>
+            <p className="text-[14px] leading-[1.8] text-[var(--cream)]/50">
+              Moda con identidad. Piezas cuidadas, diseño exclusivo y envíos a todo el país.
+            </p>
+          </div>
 
-        <div>
-          <p className="text-sm text-gray-400 leading-relaxed">
-            Moda con identidad. Envíos a todo el país.
+          <div>
+            <p className="text-[11px] tracking-[3px] uppercase text-[var(--accent)] mb-6">Enlaces</p>
+            <ul className="flex flex-col gap-3">
+              {[
+                { label: "Todos los productos", href: "/productos" },
+                { label: "Novedades", href: "/productos?categoria=novedades" },
+                { label: "Ofertas", href: "/productos?categoria=ofertas" },
+                { label: "Envíos", href: "/envios" },
+                { label: "Contacto", href: "/contacto" },
+              ].map(({ label, href }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="text-[14px] text-[var(--cream)]/50 hover:text-[var(--cream)] transition-colors duration-300"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="pt-8 border-t border-[var(--cream)]/10 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-[12px] text-[var(--cream)]/30 tracking-[1px]">
+            © {new Date().getFullYear()} — Todos los derechos reservados
           </p>
         </div>
-
-        <div>
-          <h4 className="text-sm font-semibold mb-4 uppercase tracking-widest">Tienda</h4>
-          <ul className="space-y-2">
-            <li><Link href="/productos" className="text-sm text-gray-500 hover:text-black">Todos los productos</Link></li>
-            <li><Link href="/productos?categoria=novedades" className="text-sm text-gray-500 hover:text-black">Novedades</Link></li>
-            <li><Link href="/productos?categoria=ofertas" className="text-sm text-gray-500 hover:text-black">Ofertas</Link></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="text-sm font-semibold mb-4 uppercase tracking-widest">Ayuda</h4>
-          <ul className="space-y-2">
-            <li><Link href="/envios" className="text-sm text-gray-500 hover:text-black">Envíos</Link></li>
-            <li><Link href="/cambios" className="text-sm text-gray-500 hover:text-black">Cambios y devoluciones</Link></li>
-            <li><Link href="/contacto" className="text-sm text-gray-500 hover:text-black">Contacto</Link></li>
-          </ul>
-        </div>
-
-      </div>
-      <div className="border-t border-gray-100 py-4 text-center text-xs text-gray-300">
-        © {new Date().getFullYear()} Opendes1gn. Todos los derechos reservados.
       </div>
     </footer>
   );

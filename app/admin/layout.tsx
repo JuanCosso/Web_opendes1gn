@@ -4,68 +4,57 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { label: "Dashboard", href: "/admin/dashboard", icon: "⊞" },
-  { label: "Productos", href: "/admin/productos", icon: "◈" },
-  { label: "Categorías", href: "/admin/categorias", icon: "◇" },
-  { label: "Pedidos", href: "/admin/pedidos", icon: "◎" },
-  { label: "Envíos", href: "/admin/envios", icon: "◉" },
+  { label: "Dashboard", href: "/admin/dashboard" },
+  { label: "Productos", href: "/admin/productos" },
+  { label: "Categorías", href: "/admin/categorias" },
+  { label: "Pedidos", href: "/admin/pedidos" },
+  { label: "Envíos", href: "/admin/envios" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#f9fafb" }}>
-
-      {/* Sidebar */}
-      <aside style={{
-        width: "192px",
-        flexShrink: 0,
-        backgroundColor: "white",
-        borderRight: "1px solid #f3f4f6",
-        display: "flex",
-        flexDirection: "column",
-      }}>
-        <div style={{ padding: "20px", borderBottom: "1px solid #f3f4f6" }}>
-          <p style={{ fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", color: "#9ca3af" }}>Panel</p>
-          <p style={{ fontWeight: 600, fontSize: "14px", marginTop: "2px" }}>Opendes1gn</p>
+    <div className="flex min-h-screen w-full bg-[var(--cream)]">
+      <aside className="w-56 flex-shrink-0 bg-[var(--blush)] border-r border-[var(--border)] flex flex-col">
+        <div className="px-6 py-6 border-b border-[var(--border)]">
+          <p className="text-[11px] tracking-[3px] uppercase text-[var(--accent)]">Panel</p>
         </div>
 
-        <nav style={{ padding: "12px", flex: 1, display: "flex", flexDirection: "column", gap: "2px" }}>
-          {navItems.map(({ label, href, icon }) => {
+        <nav className="p-4 flex-1 flex flex-col gap-1">
+          {navItems.map(({ label, href }) => {
             const active = pathname.startsWith(href);
             return (
-              <Link key={href} href={href} style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                padding: "8px 12px",
-                borderRadius: "8px",
-                fontSize: "14px",
-                textDecoration: "none",
-                backgroundColor: active ? "#000" : "transparent",
-                color: active ? "#fff" : "#6b7280",
-                transition: "all 0.15s",
-              }}>
-                <span style={{ color: active ? "white" : "#d1d5db" }}>{icon}</span>
+              <Link
+                key={href}
+                href={href}
+                className={`px-4 py-3 text-[12px] tracking-[2px] uppercase rounded-[var(--radius-sm)] transition-all duration-300 ${
+                  active
+                    ? "bg-[var(--text)] text-[var(--cream)] hover:bg-[var(--accent)]"
+                    : "text-[var(--text-light)] hover:text-[var(--text)] hover:bg-[var(--cream)]/60"
+                }`}
+              >
                 {label}
               </Link>
             );
           })}
         </nav>
 
-        <div style={{ padding: "16px", borderTop: "1px solid #f3f4f6" }}>
-          <Link href="/" style={{ fontSize: "12px", color: "#9ca3af", textDecoration: "none" }}>
-            ← Volver a la tienda
+        <div className="px-6 py-5 border-t border-[var(--border)]">
+          <Link
+            href="/"
+            className="text-[12px] tracking-[2px] uppercase text-[var(--text-light)] hover:text-[var(--text)] transition-colors duration-300"
+          >
+            ← Tienda
           </Link>
         </div>
       </aside>
 
-      {/* Contenido */}
-      <main style={{ flex: 1, padding: "32px", overflowY: "auto" }}>
-        {children}
+      <main className="flex-1 overflow-y-auto w-full">
+        <div className="container-center py-10 md:py-14">
+          {children}
+        </div>
       </main>
-
     </div>
   );
 }

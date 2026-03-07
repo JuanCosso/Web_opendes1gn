@@ -10,46 +10,44 @@ export default async function DashboardPage() {
   ]);
 
   const stats = [
-    { label: "Productos", value: totalProducts, href: "/admin/productos", bg: "bg-gray-50", text: "text-gray-900" },
-    { label: "Pedidos", value: totalOrders, href: "/admin/pedidos", bg: "bg-gray-50", text: "text-gray-900" },
-    { label: "Pendientes", value: pendingOrders, href: "/admin/pedidos", bg: "bg-yellow-50", text: "text-yellow-700" },
-    { label: "Usuarios", value: totalUsers, href: "#", bg: "bg-gray-50", text: "text-gray-900" },
+    { label: "Productos", value: totalProducts, href: "/admin/productos" },
+    { label: "Pedidos", value: totalOrders, href: "/admin/pedidos" },
+    { label: "Pendientes", value: pendingOrders, href: "/admin/pedidos", accent: true },
+    { label: "Usuarios", value: totalUsers, href: "#" },
   ];
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-sm text-gray-400 mt-1">Resumen general de la tienda</p>
+      <div className="mb-12">
+        <span className="block text-[12px] tracking-[3px] uppercase text-[var(--accent)] mb-2">Panel de control</span>
+        <h1 className="text-[clamp(2rem,4vw,2.5rem)] font-light text-[var(--text)] italic" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          Dashboard
+        </h1>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
         {stats.map((stat) => (
-          <Link key={stat.label} href={stat.href}
-            className={`${stat.bg} rounded-xl p-5 border border-gray-100 hover:border-gray-200 transition-colors`}>
-            <p className="text-xs uppercase tracking-widest text-gray-400 mb-3">{stat.label}</p>
-            <p className={`text-4xl font-bold ${stat.text}`}>{stat.value}</p>
+          <Link
+            key={stat.label}
+            href={stat.href}
+            className={`p-6 border border-[var(--border)] rounded-[var(--radius)] transition-all duration-300 hover:-translate-y-1 card-hover ${
+              stat.accent ? "bg-[var(--blush)]" : "bg-[var(--white)]"
+            }`}
+          >
+            <p className="text-[11px] tracking-[2px] uppercase text-[var(--text-light)] mb-3">{stat.label}</p>
+            <p className="text-4xl md:text-5xl font-light text-[var(--text)]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+              {stat.value}
+            </p>
           </Link>
         ))}
       </div>
 
-      {/* Acciones rápidas */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6">
-        <h2 className="font-semibold text-sm mb-4">Acciones rápidas</h2>
-        <div className="flex gap-3">
-          <Link href="/admin/productos/nuevo"
-            className="bg-black text-white text-sm px-5 py-2.5 rounded-lg hover:bg-gray-800 transition-colors">
-            + Nuevo producto
-          </Link>
-          <Link href="/admin/categorias/nueva"
-            className="border border-gray-200 text-sm px-5 py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
-            + Nueva categoría
-          </Link>
-          <Link href="/admin/pedidos"
-            className="border border-gray-200 text-sm px-5 py-2.5 rounded-lg hover:bg-gray-50 transition-colors">
-            Ver pedidos
-          </Link>
+      <div className="bg-[var(--white)] border border-[var(--border)] p-6 md:p-8 rounded-[var(--radius)]">
+        <h2 className="text-[12px] tracking-[3px] uppercase text-[var(--accent)] mb-6">Acciones rápidas</h2>
+        <div className="flex gap-3 flex-wrap">
+          <Link href="/admin/productos/nuevo" className="btn-primary">+ Nuevo producto</Link>
+          <Link href="/admin/categorias/nueva" className="btn-secondary">+ Nueva categoría</Link>
+          <Link href="/admin/pedidos" className="btn-secondary">Ver pedidos</Link>
         </div>
       </div>
     </div>

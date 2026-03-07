@@ -43,72 +43,76 @@ export default function RegisterPage() {
     router.push("/login");
   }
 
+  const inputClass =
+    "w-full bg-transparent border-b border-[var(--border-strong)] py-3.5 text-[14px] text-[var(--text)] placeholder-[var(--text-light)] focus:outline-none focus:border-[var(--accent)] transition-colors duration-300 font-light";
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full p-8 bg-white rounded-lg shadow">
-        <h1 className="text-2xl font-bold text-center mb-6">Crear cuenta</h1>
-
-        {error && (
-          <p className="bg-red-50 text-red-500 text-sm p-3 rounded mb-4">
-            {error}
-          </p>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Nombre</label>
-            <input
-              name="name"
-              type="text"
-              required
-              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
-              name="email"
-              type="email"
-              required
-              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Contraseña</label>
-            <input
-              name="password"
-              type="password"
-              required
-              minLength={6}
-              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Confirmar contraseña
-            </label>
-            <input
-              name="confirm"
-              type="password"
-              required
-              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-black text-white py-2 rounded text-sm font-medium hover:bg-gray-800 disabled:opacity-50"
+    <div className="min-h-screen w-full bg-[var(--cream)] flex flex-col md:flex-row">
+      <div className="hidden md:flex flex-1 bg-[var(--butter)] items-center justify-center p-12 border-r border-[var(--border)]">
+        <div className="w-full max-w-md flex items-center justify-center">
+          <span
+            className="text-[140px] text-[var(--rose)]/20 italic font-light select-none"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}
           >
-            {loading ? "Registrando..." : "Registrarse"}
-          </button>
-        </form>
+            O
+          </span>
+        </div>
+      </div>
 
-        <p className="text-center text-sm mt-4 text-gray-500">
-          ¿Ya tenés cuenta?{" "}
-          <Link href="/login" className="text-black font-medium underline">
-            Iniciá sesión
+      <div className="flex-1 flex items-center justify-center p-8 md:p-16">
+        <div className="w-full max-w-[380px]">
+          <Link
+            href="/"
+            className="text-[12px] tracking-[2px] uppercase text-[var(--text-light)] hover:text-[var(--text)] transition-colors duration-300 mb-12 block"
+          >
+            ← Volver a la tienda
           </Link>
-        </p>
+
+          <span className="block text-[11px] tracking-[3px] uppercase text-[var(--accent)] mb-2">Nueva cuenta</span>
+          <h1
+            className="text-[clamp(2rem,4vw,2.5rem)] font-light text-[var(--text)] italic mb-10"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          >
+            Crear cuenta
+          </h1>
+
+          {error && (
+            <p className="text-[13px] text-[var(--text-light)] bg-[var(--blush)] border border-[var(--border)] px-4 py-3 mb-6 rounded-[var(--radius-sm)]">
+              {error}
+            </p>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {[
+              { name: "name", label: "Nombre", type: "text", placeholder: "Tu nombre" },
+              { name: "email", label: "Email", type: "email", placeholder: "tu@email.com" },
+              { name: "password", label: "Contraseña", type: "password", placeholder: "••••••••", minLength: 6 },
+              { name: "confirm", label: "Confirmar contraseña", type: "password", placeholder: "••••••••" },
+            ].map((field) => (
+              <div key={field.name}>
+                <label className="block text-[11px] tracking-[2px] uppercase text-[var(--text-light)] mb-2">{field.label}</label>
+                <input
+                  name={field.name}
+                  type={field.type}
+                  required
+                  minLength={field.minLength}
+                  placeholder={field.placeholder}
+                  className={inputClass}
+                />
+              </div>
+            ))}
+            <button type="submit" disabled={loading} className="btn-primary w-full py-4 disabled:opacity-50 disabled:hover:transform-none">
+              {loading ? "Registrando..." : "Crear cuenta"}
+            </button>
+          </form>
+
+          <p className="text-[14px] text-[var(--text-light)] mt-10 text-center">
+            ¿Ya tenés cuenta?{" "}
+            <Link href="/login" className="text-[var(--accent)] hover:text-[var(--text)] transition-colors duration-300">
+              Iniciá sesión
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

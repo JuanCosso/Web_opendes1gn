@@ -22,40 +22,50 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <Link href={`/productos/${product.slug}`} className="group block">
-      <div className="relative aspect-[3/4] bg-gray-100 overflow-hidden rounded-lg mb-3">
-        {image?.url ? (
-          <Image
-            src={image.url}
-            alt={image.alt || product.name}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-300 text-sm">
-            Sin imagen
-          </div>
-        )}
-        {hasDiscount && (
-          <span className="absolute top-2 left-2 bg-black text-white text-xs px-2 py-1 rounded">
-            OFERTA
-          </span>
-        )}
-      </div>
-
-      <div>
-        <p className="text-xs text-gray-400 mb-1">{product.category?.name}</p>
-        <h3 className="text-sm font-medium text-gray-900 group-hover:underline">
-          {product.name}
-        </h3>
-        <div className="flex items-center gap-2 mt-1">
-          <span className="text-sm font-semibold">
-            ${Number(product.price).toLocaleString("es-AR")}
-          </span>
+      <div className="bg-[var(--white)] overflow-hidden rounded-[var(--radius)] card-hover border border-[var(--border)]">
+        <div className="relative aspect-[3/4] bg-[var(--blush)] overflow-hidden">
+          {image?.url ? (
+            <Image
+              src={image.url}
+              alt={image.alt || product.name}
+              fill
+              className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <span
+                className="text-6xl text-[var(--rose)]/50 italic font-light"
+                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+              >
+                O
+              </span>
+            </div>
+          )}
           {hasDiscount && (
-            <span className="text-xs text-gray-400 line-through">
-              ${Number(product.comparePrice).toLocaleString("es-AR")}
+            <span className="absolute top-4 left-4 bg-[var(--cream)] text-[var(--accent)] text-[9px] tracking-[2px] uppercase font-medium px-2.5 py-1">
+              Oferta
             </span>
           )}
+        </div>
+
+        <div className="p-5 md:p-6">
+          <p className="text-[10px] tracking-[2px] uppercase text-[var(--accent)] mb-1">
+            {product.category?.name}
+          </p>
+          <h3
+            className="text-[22px] font-normal text-[var(--text)] mb-2 leading-tight"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          >
+            {product.name}
+          </h3>
+          <p className="text-[12px] text-[var(--text-light)] leading-relaxed mb-4">
+            ${Number(product.price).toLocaleString("es-AR")} {hasDiscount && (
+              <span className="line-through opacity-80">${Number(product.comparePrice).toLocaleString("es-AR")}</span>
+            )}
+          </p>
+          <span className="text-[12px] text-[var(--text-light)] uppercase tracking-[1px] group-hover:text-[var(--accent)] transition-colors duration-300">
+            Ver pieza →
+          </span>
         </div>
       </div>
     </Link>

@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+const label = "block text-[11px] tracking-[2px] uppercase text-[var(--text-light)] mb-2";
+const input = "w-full bg-transparent border-b border-[var(--border)] py-3 text-[14px] text-[var(--text)] placeholder-[var(--text-light)] focus:outline-none focus:border-[var(--accent)] transition-colors duration-300 font-light";
 
 export default function NuevaCategoriaPage() {
   const router = useRouter();
@@ -9,7 +13,10 @@ export default function NuevaCategoriaPage() {
   const [error, setError] = useState("");
 
   function generateSlug(name: string) {
-    return name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    return name.toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -17,8 +24,8 @@ export default function NuevaCategoriaPage() {
     setLoading(true);
     setError("");
 
-    const formData = new FormData(e.currentTarget);
-    const name = formData.get("name") as string;
+    const fd = new FormData(e.currentTarget);
+    const name = fd.get("name") as string;
 
     const res = await fetch("/api/categorias", {
       method: "POST",
@@ -26,8 +33,8 @@ export default function NuevaCategoriaPage() {
       body: JSON.stringify({
         name,
         slug: generateSlug(name),
-        description: formData.get("description"),
-        image: formData.get("image"),
+        description: fd.get("description") || null,
+        image: fd.get("image") || null,
       }),
     });
 
@@ -44,30 +51,49 @@ export default function NuevaCategoriaPage() {
 
   return (
     <div className="max-w-lg">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">Nueva categoría</h1>
+      <div className="mb-10">
+        <Link href="/admin/categorias"
+          className="text-[12px] tracking-[2px] uppercase text-[var(--text-light)] hover:text-[var(--text)] transition-colors duration-300 mb-6 block">
+          ← Volver
+        </Link>
+        <span className="block text-[12px] tracking-[3px] uppercase text-[var(--accent)] mb-2">Admin</span>
+        <h1 className="text-[clamp(2rem,4vw,2.5rem)] font-light text-[var(--text)] italic" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          Nueva categoría
+        </h1>
       </div>
 
-      {error && <p className="bg-red-50 text-red-500 text-sm p-3 rounded mb-4">{error}</p>}
+      {error && (
+        <div className="bg-[var(--blush)] border border-[var(--border)] px-5 py-4 mb-8 rounded-[var(--radius-sm)]">
+          <p className="text-[13px] text-[var(--text-light)]">{error}</p>
+        </div>
+      )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-100 p-6 space-y-4">
+      <form onSubmit={handleSubmit} className="bg-[var(--white)] border border-[var(--border)] p-6 md:p-8 space-y-6 rounded-[var(--radius)]">
         <div>
-          <label className="block text-sm font-medium mb-1">Nombre *</label>
-          <input name="name" required className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
+          <label className={label}>Nombre *</label>
+          <input name="name" required placeholder="Ej: Vestidos" className={input} />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Descripción</label>
-          <textarea name="description" rows={3} className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
+          <label className={label}>Descripción</label>
+          <textarea name="description" rows={3} placeholder="Descripción breve..." className={`${input} resize-none`} />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">URL de imagen</label>
-          <input name="image" type="url" placeholder="https://..." className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
+          <label className={label}>URL de imagen</label>
+          <input name="image" type="url" placeholder="https://..." className={input} />
         </div>
         <div className="flex gap-3 pt-2">
-          <button type="submit" disabled={loading} className="bg-black text-white px-6 py-2 rounded text-sm hover:bg-gray-800 disabled:opacity-50 transition-colors">
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-6 py-3 bg-[var(--cta)] text-[var(--bg)] text-[11px] tracking-[0.18em] uppercase hover:bg-[var(--cta-hover)] transition-colors disabled:opacity-50 rounded-[var(--radius-sm)]"
+          >
             {loading ? "Guardando..." : "Crear categoría"}
           </button>
-          <button type="button" onClick={() => router.back()} className="border px-6 py-2 rounded text-sm hover:bg-gray-50 transition-colors">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="px-6 py-3 border border-[var(--border-strong)] text-[var(--text-muted)] text-[11px] tracking-[0.18em] uppercase hover:bg-[var(--accent-bg)] transition-colors rounded-[var(--radius-sm)]"
+          >
             Cancelar
           </button>
         </div>

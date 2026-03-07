@@ -1,72 +1,106 @@
-import { notFound } from "next/navigation";
-import Image from "next/image";
-import { AddToCartButton } from "@/components/shop/AddToCartButton";
+import Link from "next/link";
+import { ProductCard } from "@/components/shop/ProductCard";
+import type { ProductWithImages } from "@/lib";
 
-async function getProduct(slug: string) {
+async function getProducts(categoria?: string) {
+  const params = new URLSearchParams({ limit: "24" });
+  if (categoria) params.set("categoria", categoria);
+
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/productos/${slug}`,
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/productos?${params}`,
     { cache: "no-store" }
   );
-  if (!res.ok) return null;
+  if (!res.ok) return { products: [], total: 0 };
   return res.json();
 }
 
-export default async function ProductoPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const product = await getProduct(slug);
-  if (!product) notFound();
+async function getCategories() {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/categorias`,
+    { cache: "no-store" }
+  );
+  if (!res.ok) return [];
+  return res.json();
+}
 
-  const mainImage = product.images[0];
+export default async function ProductosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ categoria?: string }>;
+}) {
+  const { categoria } = await searchParams;
+  const [{ products, total }, categories] = await Promise.all([
+    getProducts(categoria),
+    getCategories(),
+  ]);
 
   return (
-    <main className="max-w-7xl mx-auto px-4 py-10">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-
-        {/* Imágenes */}
-        <div className="space-y-3">
-          <div className="relative aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
-            {mainImage ? (
-              <Image src={mainImage.url} alt={mainImage.alt || product.name} fill className="object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-300">Sin imagen</div>
-            )}
-          </div>
-          {product.images.length > 1 && (
-            <div className="grid grid-cols-4 gap-2">
-              {product.images.slice(1).map((img: { id: string; url: string; alt: string }) => (
-                <div key={img.id} className="relative aspect-square bg-gray-100 rounded overflow-hidden">
-                  <Image src={img.url} alt={img.alt || ""} fill className="object-cover" />
-                </div>
-              ))}
-            </div>
-          )}
+    <main className="w-full min-h-screen bg-[var(--cream)]">
+      <div className="container-center py-14 md:py-24">
+        <div className="mb-10">
+          <span className="block text-[12px] tracking-[3px] uppercase text-[var(--accent)] mb-2">
+            {total} {total === 1 ? "pieza" : "piezas"}
+          </span>
+          <h1
+            className="text-[clamp(2rem,4vw,3.5rem)] font-light text-[var(--text)] italic"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          >
+            {categoria
+              ? categories.find((c: { slug: string; name: string }) => c.slug === categoria)?.name ?? "Productos"
+              : "Todo"}
+          </h1>
         </div>
 
-        {/* Info */}
-        <div className="flex flex-col gap-4">
-          <p className="text-sm text-gray-400">{product.category?.name}</p>
-          <h1 className="text-3xl font-bold">{product.name}</h1>
-          <div className="flex items-center gap-3">
-            <span className="text-2xl font-semibold">
-              ${Number(product.price).toLocaleString("es-AR")}
-            </span>
-            {product.comparePrice && (
-              <span className="text-lg text-gray-400 line-through">
-                ${Number(product.comparePrice).toLocaleString("es-AR")}
-              </span>
-            )}
+        {categories.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-12 pb-8 border-b border-[var(--border)]">
+            <Link
+              href="/productos"
+              className={`px-4 py-2.5 text-[11px] tracking-[3px] uppercase transition-all duration-300 rounded-[var(--radius-sm)] ${
+                !categoria
+                  ? "bg-[var(--text)] text-[var(--cream)] hover:bg-[var(--accent)] hover:-translate-y-0.5"
+                  : "text-[var(--text-light)] border border-[var(--border)] hover:text-[var(--text)] hover:border-[var(--accent)] hover:-translate-y-0.5"
+              }`}
+            >
+              Todo
+            </Link>
+            {categories.map((cat: { id: string; name: string; slug: string }) => (
+              <Link
+                key={cat.id}
+                href={`/productos?categoria=${cat.slug}`}
+                className={`px-4 py-2.5 text-[11px] tracking-[3px] uppercase transition-all duration-300 rounded-[var(--radius-sm)] ${
+                  categoria === cat.slug
+                    ? "bg-[var(--text)] text-[var(--cream)] hover:bg-[var(--accent)] hover:-translate-y-0.5"
+                    : "text-[var(--text-light)] border border-[var(--border)] hover:text-[var(--text)] hover:border-[var(--accent)] hover:-translate-y-0.5"
+                }`}
+              >
+                {cat.name}
+              </Link>
+            ))}
           </div>
-          {product.description && (
-            <p className="text-gray-600 text-sm leading-relaxed">{product.description}</p>
-          )}
+        )}
 
-          <AddToCartButton product={product} />
-        </div>
-
+        {products.length === 0 ? (
+          <div className="py-24 md:py-32 text-center">
+            <p
+              className="text-[22px] font-light italic text-[var(--text-light)] mb-6"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            >
+              No hay productos en esta categoría
+            </p>
+            <Link
+              href="/productos"
+              className="text-[12px] tracking-[3px] uppercase text-[var(--accent)] hover:text-[var(--text)] transition-colors duration-300"
+            >
+              Ver todos →
+            </Link>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+            {products.map((product: ProductWithImages) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
       </div>
     </main>
   );
