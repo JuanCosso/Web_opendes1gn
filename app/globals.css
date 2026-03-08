@@ -1,21 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap');
 @import "tailwindcss";
 
-/* Paleta referencia ÚNICA — marrones y cremas claros */
+/* Paleta — marrones terrosos y verdes oliva */
 :root {
-  --cream: #fdf8f4;
-  --blush: #f5e6e0;
-  --rose: #e8c9c1;
-  --butter: #f7f0dc;
-  --sand: #ebe0d6;
-  --tan: #e2d5ca;
-  --text: #2d2522;
-  --text-light: #8c7b76;
-  --accent: #c9a89a;
-  --accent2: #9b8ec4;
-  --white: #fff;
-  --border: rgba(201, 168, 154, 0.25);
-  --border-strong: rgba(201, 168, 154, 0.4);
+  --cream: #f5f0e8;          /* crema cálido (fondo principal) */
+  --blush: #e8dfc8;          /* beige/arena claro */
+  --rose: #c4b08a;           /* arena dorada */
+  --butter: #ede5d0;         /* manteca cálida */
+  --sand: #d4c9a8;           /* arena media */
+  --tan: #a89060;            /* khaki/marrón claro */
+  --text: #2d3d22;           /* verde oscuro (fondo oscuro / texto principal) */
+  --text-light: #5a4a2a;     /* marrón medio (texto secundario) */
+  --accent: #8b5e2a;         /* marrón cálido (acento) */
+  --accent2: #8a9870;        /* verde oliva medio (acento secundario) */
+  --white: #faf7f2;
+  --border: rgba(139, 94, 42, 0.2);
+  --border-strong: rgba(139, 94, 42, 0.35);
   --radius: 6px;
   --radius-sm: 4px;
   --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -184,7 +184,7 @@ h1, h2, h3, h4 {
 
 .card-hover:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 60px rgba(45, 37, 34, 0.1);
+  box-shadow: 0 20px 60px rgba(45, 61, 34, 0.12);
 }
 
 input, textarea, select {
@@ -196,11 +196,11 @@ input, textarea, select {
 input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(201, 168, 154, 0.2);
+  box-shadow: 0 0 0 2px rgba(139, 94, 42, 0.2);
 }
 
 ::selection {
-  background: rgba(201, 168, 154, 0.3);
+  background: rgba(139, 94, 42, 0.25);
   color: var(--text);
 }
 

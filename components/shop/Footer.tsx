@@ -10,22 +10,38 @@ export function Footer() {
               className="mb-5 font-light tracking-[6px] uppercase text-[var(--cream)]"
               style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "28px" }}
             >
-              Tienda
+              opendes1gn
             </p>
             <p className="text-[14px] leading-[1.8] text-[var(--cream)]/50">
-              Moda con identidad. Piezas cuidadas, diseño exclusivo y envíos a todo el país.
+              {/* Aquí va tu frase — reemplazá este texto cuando estés listo */}
+              Tu frase aquí.
             </p>
           </div>
 
           <div>
-            <p className="text-[11px] tracking-[3px] uppercase text-[var(--accent)] mb-6">Enlaces</p>
+            <p className="text-[11px] tracking-[3px] uppercase text-[var(--accent)] mb-6">Redes Sociales</p>
+            <ul className="flex flex-col gap-3 mb-8">
+              {[
+                { label: "Instagram", href: "https://instagram.com" },
+                { label: "TikTok", href: "https://tiktok.com" },
+              ].map(({ label, href }) => (
+                <li key={href}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[14px] text-[var(--cream)]/50 hover:text-[var(--cream)] transition-colors duration-300"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            <p className="text-[11px] tracking-[3px] uppercase text-[var(--accent)] mb-4">Contacto</p>
             <ul className="flex flex-col gap-3">
               {[
-                { label: "Todos los productos", href: "/productos" },
-                { label: "Novedades", href: "/productos?categoria=novedades" },
-                { label: "Ofertas", href: "/productos?categoria=ofertas" },
-                { label: "Envíos", href: "/envios" },
-                { label: "Contacto", href: "/contacto" },
+                { label: "Escribinos", href: "/contacto" },
               ].map(({ label, href }) => (
                 <li key={href}>
                   <Link
@@ -42,7 +58,7 @@ export function Footer() {
 
         <div className="pt-8 border-t border-[var(--cream)]/10 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-[12px] text-[var(--cream)]/30 tracking-[1px]">
-            © {new Date().getFullYear()} — Todos los derechos reservados
+            © {new Date().getFullYear()} opendes1gn — Todos los derechos reservados
           </p>
         </div>
       </div>
