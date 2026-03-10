@@ -22,7 +22,6 @@ model User {
   accounts  Account[]
   sessions  Session[]
   orders    Order[]
-  addresses Address[]
   cart      CartItem[]
 
   @@map("users")
@@ -160,23 +159,30 @@ model CartItem {
 // ─── PEDIDOS ─────────────────────────────────────────────────
 
 model Order {
-  id              String      @id @default(cuid())
-  userId          String
-  status          OrderStatus @default(PENDING)
-  total           Decimal     @db.Decimal(10, 2)
-  subtotal        Decimal     @db.Decimal(10, 2)
-  shippingCost    Decimal     @db.Decimal(10, 2) @default(0)
-  discount        Decimal     @db.Decimal(10, 2) @default(0)
-  notes           String?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  id           String      @id @default(cuid())
+  userId       String?                          // opcional → permite invitados
+  status       OrderStatus @default(PENDING)
+  total        Decimal     @db.Decimal(10, 2)
+  subtotal     Decimal     @db.Decimal(10, 2)
+  shippingCost Decimal     @db.Decimal(10, 2) @default(0)
+  discount     Decimal     @db.Decimal(10, 2) @default(0)
+  notes        String?
 
-  user      User        @relation(fields: [userId], references: [id])
-  items     OrderItem[]
-  payment   Payment?
-  shipment  Shipment?
-  address   Address?    @relation(fields: [addressId], references: [id])
-  addressId String?
+  // Datos del comprador (guest o logueado)
+  guestName    String?
+  guestEmail   String?
+  guestPhone   String?
+  guestStreet  String?
+  guestCity    String?
+  guestState   String?
+  guestZip     String?
+
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  user    User?       @relation(fields: [userId], references: [id])
+  items   OrderItem[]
+  payment Payment?
 
   @@map("orders")
 }
@@ -215,50 +221,6 @@ model Payment {
   @@map("payments")
 }
 
-// ─── ENVÍOS ──────────────────────────────────────────────────
-
-model Shipment {
-  id             String         @id @default(cuid())
-  orderId        String         @unique
-  carrier        String?
-  trackingNumber String?
-  trackingUrl    String?
-  status         ShipmentStatus @default(PENDING)
-  shippoShipmentId String?
-  shippoLabelUrl   String?
-  estimatedDelivery DateTime?
-  shippedAt      DateTime?
-  deliveredAt    DateTime?
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
-
-  @@map("shipments")
-}
-
-// ─── DIRECCIONES ─────────────────────────────────────────────
-
-model Address {
-  id         String   @id @default(cuid())
-  userId     String
-  name       String
-  street     String
-  street2    String?
-  city       String
-  state      String
-  zip        String
-  country    String   @default("AR")
-  phone      String?
-  isDefault  Boolean  @default(false)
-  createdAt  DateTime @default(now())
-
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orders Order[]
-
-  @@map("addresses")
-}
-
 // ─── ENUMS ───────────────────────────────────────────────────
 
 enum Role {
@@ -289,14 +251,4 @@ enum PaymentStatus {
   COMPLETED
   FAILED
   REFUNDED
-}
-
-enum ShipmentStatus {
-  PENDING
-  LABEL_CREATED
-  IN_TRANSIT
-  OUT_FOR_DELIVERY
-  DELIVERED
-  RETURNED
-  FAILED
 }

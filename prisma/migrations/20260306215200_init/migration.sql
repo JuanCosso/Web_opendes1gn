@@ -185,8 +185,6 @@ CREATE TABLE "shipments" (
     "trackingNumber" TEXT,
     "trackingUrl" TEXT,
     "status" "ShipmentStatus" NOT NULL DEFAULT 'PENDING',
-    "shippoShipmentId" TEXT,
-    "shippoLabelUrl" TEXT,
     "estimatedDelivery" TIMESTAMP(3),
     "shippedAt" TIMESTAMP(3),
     "deliveredAt" TIMESTAMP(3),
