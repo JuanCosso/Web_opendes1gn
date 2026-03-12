@@ -11,13 +11,36 @@ export function Navbar() {
   return (
     <header className="sticky top-0 left-0 right-0 z-50 w-full bg-[var(--cream)]/90 backdrop-blur-[12px] border-b border-[var(--border)]">
       <div className="container-center flex justify-between items-center min-h-[56px] sm:min-h-[64px] md:h-[72px] py-3 md:py-0">
-        <Link
-          href="/"
-          className="font-[350] text-[var(--text)] transition-colors duration-300 hover:text-[var(--accent)] min-h-[44px] flex items-center"
-          style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(18px, 4vw, 22px)", letterSpacing: "4px", textTransform: "uppercase" }}
+      <Link
+        href="/"
+        className="flex items-center gap-2.5 min-h-[44px]"
+        aria-label="Inicio — opendes1gn"
+      >
+        <img
+          src="/img/logo.png"
+          alt=""
+          aria-hidden
+          style={{
+            height: "36px",
+            width: "auto",
+            objectFit: "contain",
+            /* Convierte el blanco del logo al color --text-light (#5a4a2a) */
+            filter: "brightness(0) saturate(100%) invert(29%) sepia(18%) saturate(800%) hue-rotate(5deg) brightness(85%) contrast(90%)",
+          }}
+        />
+        <span
+          className="text-[var(--text-light)] hover:text-[var(--text)] transition-colors duration-300"
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: "12px",
+            letterSpacing: "4px",
+            textTransform: "uppercase",
+            fontWeight: 400,
+          }}
         >
-          Inicio
-        </Link>
+          OPENDES1GN
+        </span>
+      </Link>
 
         <div className="flex items-center gap-3 sm:gap-5 md:gap-6">
           <Link
@@ -68,7 +91,7 @@ export function Navbar() {
       </div>
 
       <div
-        className={`md:hidden border-t border-[var(--border)] bg-[var(--blush)] overflow-hidden transition-all duration-300 ease-[var(--ease)] ${
+        className={`md:hidden border-t border-[var(--border)] bg-[var(--cream)] overflow-hidden transition-all duration-300 ease-[var(--ease)] ${
           menuOpen ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
         }`}
         aria-hidden={!menuOpen}

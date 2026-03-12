@@ -48,7 +48,7 @@ export default async function HomePage() {
         {/* Velo único sobre TODO el main — garantiza tono idéntico en todas las secciones */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: "rgba(245,240,232,0.84)", zIndex: 0 }}
+          style={{ background: "rgba(245,240,232,0.90)", zIndex: 0 }}
           aria-hidden
         />
 
@@ -130,98 +130,113 @@ export default async function HomePage() {
         {/* ── MARQUEE ──────────────────────────────────────────── */}
         <div
           className="w-full overflow-hidden border-y border-[var(--border)] relative"
-          style={{ zIndex: 1, backgroundColor: "rgba(245,240,232,0.70)" }}
+          style={{
+            zIndex: 1,
+            backgroundColor: "rgba(245,240,232,0.70)",
+            marginTop: "clamp(2.5rem, 6vw, 5rem)",
+            marginBottom: "clamp(2.5rem, 6vw, 5rem)",
+          }}
         >
           <div
             className="flex whitespace-nowrap py-[14px]"
             style={{
-              animation: "marquee 28s linear infinite",
+              animation: "marquee 35s linear infinite",
               width: "max-content",
+              willChange: "transform",
             }}
           >
-            {/* Dos copias idénticas = loop perfecto sin salto visible */}
-            {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((t, i) => (
-              <span key={i} className="inline-flex items-center gap-8 px-8">
-                <span className="text-[11px] tracking-[4px] uppercase text-[var(--text-light)]">{t}</span>
-                <span className="text-[var(--accent)]/35 text-xs" aria-hidden>✦</span>
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* ── NOVEDADES ────────────────────────────────────────── */}
-        <section className="w-full relative" style={{ zIndex: 1 }}>
-          <div className="container-center py-20 md:py-28">
-
-            {/* Encabezado */}
-            <div
-              className="animate-fadeUp flex flex-col items-center text-center mb-14 gap-5"
-              style={{ animationFillMode: "both" }}
-            >
-              <h2
-                className="text-[clamp(2.5rem,5vw,4rem)] font-light text-[var(--text)] leading-[1.0]"
-                style={{ fontFamily: "'Cormorant Garamond', serif" }}
-              >
-                Novedades
-              </h2>
-              <Link
-                href="/productos"
-                className="group inline-flex items-center gap-3 text-[11px] tracking-[4px] uppercase text-[var(--text-light)] hover:text-[var(--accent)] transition-colors duration-300"
-              >
-                <span>Ver todos</span>
+            {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((t, i) => (
+              <span key={i} className="inline-flex items-center">
                 <span
-                  className="inline-block transition-transform duration-300 group-hover:translate-x-1.5"
-                  aria-hidden
+                  className="text-[var(--text-light)]"
+                  style={{
+                    fontSize: "clamp(9px, 1.1vw, 11px)",
+                    letterSpacing: "clamp(2px, 0.4vw, 3px)",
+                    textTransform: "uppercase",
+                  }}
                 >
-                  →
+                  {t}
                 </span>
-              </Link>
-            </div>
-
-            {/* Grid de productos */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {latest.length === 0
-                ? [...Array(4)].map((_, i) => (
-                    <div
-                      key={i}
-                      className="aspect-[3/4] bg-[var(--blush)] rounded-[var(--radius)] animate-pulse"
-                    />
-                  ))
-                : latest.map((product: ProductWithImages, i: number) => (
-                    <div
-                      key={product.id}
-                      className="animate-fadeUp"
-                      style={{ animationDelay: `${i * 0.08}s`, animationFillMode: "both" }}
-                    >
-                      <ProductCard product={product} />
-                    </div>
-                  ))}
-            </div>
-
-            {/* Cierre decorativo */}
-            <div
-              className="animate-fadeUp mt-16 md:mt-20 flex flex-col items-center gap-3"
-              style={{ animationDelay: "0.4s", animationFillMode: "both" }}
-            >
-              <div className="flex items-center gap-5 w-full max-w-[200px]">
-                <span className="flex-1 h-px bg-[var(--accent)]/15" />
                 <span
-                  className="text-[var(--accent)]/20 text-base font-light"
-                  style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                  className="text-[var(--accent)]/50"
+                  style={{
+                    margin: "0 clamp(0.6rem, 1.5vw, 1.1rem)",
+                    fontSize: "clamp(12px, 1.4vw, 16px)",
+                    lineHeight: 1,
+                  }}
                   aria-hidden
                 >
                   ✦
                 </span>
-                <span className="flex-1 h-px bg-[var(--accent)]/15" />
-              </div>
-              <p className="text-[10px] tracking-[5px] uppercase text-[var(--accent)]/25">
-                opendes1gn
-              </p>
-            </div>
-
+              </span>
+            ))}
           </div>
-        </section>
+        </div>
+        {/* ── NOVEDADES ────────────────────────────────────────── */}
+        {/* ── NOVEDADES ────────────────────────────────────────── */}
+      <section className="w-full relative" style={{ zIndex: 1 }}>
+        <div className="container-center pb-24 md:pb-32">
 
+          {/* Encabezado */}
+          <div className="animate-fadeUp flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12 md:mb-16 pb-6 border-b border-[var(--border)]"
+            style={{ animationFillMode: "both" }}>
+            <div>
+              <span className="block text-[10px] tracking-[5px] uppercase text-[var(--accent)] mb-3">
+                Últimos
+              </span>
+              <h2
+                className="text-[clamp(2.5rem,5vw,4.5rem)] font-light text-[var(--text)] leading-[1.0]"
+                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+              >
+                Diseños
+              </h2>
+            </div>
+            <Link
+              href="/productos"
+              className="group inline-flex items-center gap-2 text-[11px] tracking-[3px] uppercase text-[var(--text-light)] hover:text-[var(--accent)] transition-colors duration-300 pb-1 sm:pb-0 self-start sm:self-auto"
+            >
+              <span>Ver todos</span>
+              <span className="inline-block transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden>→</span>
+            </Link>
+          </div>
+
+          {/* Grid de productos */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8 md:gap-x-6 md:gap-y-12">
+            {latest.length === 0
+              ? [...Array(4)].map((_, i) => (
+                  <div key={i} className="aspect-[3/4] bg-[var(--blush)] animate-pulse" />
+                ))
+              : latest.map((product: ProductWithImages, i: number) => (
+                  <div
+                    key={product.id}
+                    className="animate-fadeUp"
+                    style={{ animationDelay: `${i * 0.08}s`, animationFillMode: "both" }}
+                  >
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+          </div>
+              
+          {/* Cierre decorativo */}
+          <div className="mt-20 md:mt-24 flex flex-col items-center gap-3">
+            <div className="flex items-center gap-5 w-full max-w-[160px]">
+              <span className="flex-1 h-px bg-[var(--accent)]/15" />
+              <span
+                className="text-[var(--accent)] text-sm"
+                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                aria-hidden
+              >
+                ✦
+              </span>
+              <span className="flex-1 h-px bg-[var(--accent)]/15" />
+            </div>
+            <p className="text-[9px] tracking-[5px] uppercase text-[var(--accent)]">
+              opendes1gn
+            </p>
+          </div>
+              
+        </div>
+      </section>
       </main>
 
       <Footer />

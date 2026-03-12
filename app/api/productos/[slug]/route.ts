@@ -27,6 +27,7 @@ export async function GET(
     return NextResponse.json({ error: "Error del servidor" }, { status: 500 });
   }
 }
+
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ slug: string }> }
@@ -94,8 +95,36 @@ export async function DELETE(
 ) {
   try {
     const { slug } = await params;
+
+    // Buscar el producto y ver si tiene órdenes asociadas
+    const product = await prisma.product.findUnique({
+      where: { slug },
+      include: {
+        _count: { select: { orderItems: true } },
+      },
+    });
+
+    if (!product) {
+      return NextResponse.json({ error: "Producto no encontrado" }, { status: 404 });
+    }
+
+    if (product._count.orderItems > 0) {
+      // Tiene órdenes → solo despublicar (soft delete)
+      await prisma.product.update({
+        where: { slug },
+        data: { published: false, featured: false },
+      });
+      return NextResponse.json({
+        ok: true,
+        softDeleted: true,
+        message: "El producto tiene pedidos asociados y fue despublicado en lugar de eliminado.",
+      });
+    }
+
+    // Sin órdenes → eliminar físicamente
     await prisma.product.delete({ where: { slug } });
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, softDeleted: false });
+
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Error del servidor" }, { status: 500 });

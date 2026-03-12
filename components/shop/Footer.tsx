@@ -182,7 +182,7 @@ export function Footer() {
           </p>
           <p className="text-[11px] text-[var(--cream)]/20 tracking-[1px] italic"
             style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-            Hecho con intención
+            Desarrollado por Juan Cosso
           </p>
         </div>
       </div>

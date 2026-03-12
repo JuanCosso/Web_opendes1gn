@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
+import { ProductGallery } from "@/components/shop/ProductGallery";
+import { ShareButtons } from "@/components/shop/ShareButtons";
 
 async function getProduct(slug: string) {
   const res = await fetch(
@@ -21,11 +22,13 @@ export default async function ProductoPage({
   const product = await getProduct(slug);
   if (!product) notFound();
 
-  const mainImage = product.images[0];
+  const productUrl = `${process.env.NEXT_PUBLIC_APP_URL}/productos/${slug}`;
 
   return (
     <main className="w-full min-h-screen bg-[var(--cream)]">
       <div className="container-center py-12 md:py-20">
+
+        {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-[11px] tracking-[3px] uppercase text-[var(--text-light)] mb-12">
           <Link href="/" className="hover:text-[var(--text)] transition-colors duration-300">
             Inicio
@@ -34,88 +37,80 @@ export default async function ProductoPage({
           <Link href="/productos" className="hover:text-[var(--text)] transition-colors duration-300">
             Productos
           </Link>
+          {product.category && (
+            <>
+              <span>·</span>
+              <Link
+                href={`/productos?categoria=${product.category.slug}`}
+                className="hover:text-[var(--text)] transition-colors duration-300"
+              >
+                {product.category.name}
+              </Link>
+            </>
+          )}
           <span>·</span>
-          <span className="text-[var(--text)] truncate max-w-[140px] md:max-w-none">{product.name}</span>
+          <span className="text-[var(--text)] truncate max-w-[140px] md:max-w-xs">{product.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start">
-          <div className="space-y-3">
-            <div className="relative aspect-[3/4] bg-[var(--blush)] overflow-hidden rounded-[var(--radius)] border border-[var(--border)]">
-              {mainImage ? (
-                <Image
-                  src={mainImage.url}
-                  alt={mainImage.alt || product.name}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span
-                    className="text-7xl md:text-8xl text-[var(--rose)]/40 italic font-light select-none"
-                    style={{ fontFamily: "'Cormorant Garamond', serif" }}
-                  >
-                    O
-                  </span>
-                </div>
-              )}
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start">
 
-            {product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-2">
-                {product.images.slice(1).map((img: { id: string; url: string; alt: string }) => (
-                  <div
-                    key={img.id}
-                    className="relative aspect-square bg-[var(--butter)] overflow-hidden rounded-[var(--radius-sm)] cursor-pointer group border border-[var(--border)] hover:border-[var(--accent)] transition-colors duration-300"
-                  >
-                    <Image
-                      src={img.url}
-                      alt={img.alt || ""}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* ── GALERÍA ── */}
+          <ProductGallery images={product.images} productName={product.name} />
 
-          <div className="flex flex-col gap-6 md:sticky md:top-24">
-            <div>
-              <span className="block text-[11px] tracking-[3px] uppercase text-[var(--accent)] mb-2">
-                {product.category?.name}
-              </span>
-              <h1
-                className="text-[clamp(2rem,4vw,3rem)] font-light text-[var(--text)] leading-[1.1] mb-4"
-                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          {/* ── INFO ── */}
+          <div className="md:sticky md:top-10 space-y-0">
+
+            {/* Categoría */}
+            {product.category && (
+              <Link
+                href={`/productos?categoria=${product.category.slug}`}
+                className="text-[10px] tracking-[4px] uppercase text-[var(--accent)] hover:text-[var(--text)] transition-colors block mb-4"
               >
-                {product.name}
-              </h1>
-              <p
-                className="text-[32px] md:text-[40px] font-light text-[var(--accent)]"
+                {product.category.name}
+              </Link>
+            )}
+
+            {/* Nombre */}
+            <h1
+              className="text-[clamp(2rem,4vw,3rem)] font-light text-[var(--text)] leading-[1.1] mb-6"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}
+            >
+              {product.name}
+            </h1>
+
+            {/* Precio */}
+            <div className="flex items-baseline gap-4 mb-8">
+              <span
+                className="text-[clamp(1.5rem,3vw,2rem)] font-light text-[var(--text)]"
                 style={{ fontFamily: "'Cormorant Garamond', serif" }}
               >
                 ${Number(product.price).toLocaleString("es-AR")}
-                {product.comparePrice && (
-                  <span className="text-[18px] text-[var(--text-light)] line-through font-normal ml-2">
-                    ${Number(product.comparePrice).toLocaleString("es-AR")}
-                  </span>
-                )}
-              </p>
+              </span>
+              {product.comparePrice && Number(product.comparePrice) > Number(product.price) && (
+                <span className="text-[14px] line-through text-[var(--text-light)]/50">
+                  ${Number(product.comparePrice).toLocaleString("es-AR")}
+                </span>
+              )}
             </div>
 
+            {/* Separador */}
+            <div className="w-12 h-px bg-[var(--accent)]/30 mb-8" />
+
+            {/* Descripción */}
             {product.description && (
-              <p className="text-[15px] leading-[1.8] text-[var(--text-light)] border-t border-[var(--border)] pt-6">
+              <p className="text-[14px] leading-[1.9] text-[var(--text-light)] font-light mb-10 max-w-md">
                 {product.description}
               </p>
             )}
 
+            {/* Add to cart */}
             <AddToCartButton product={product} />
 
-            <div className="border-t border-[var(--border)] pt-6 space-y-2 text-[12px] text-[var(--text-light)] tracking-[1px]">
-              <p>✦ Envíos a todo el país</p>
-              <p>✦ Cambios y devoluciones</p>
-              <p>✦ Pago seguro</p>
+            {/* Compartir */}
+            <div className="mt-10 pt-8 border-t border-[var(--border)]">
+              <ShareButtons url={productUrl} title={product.name} />
             </div>
+
           </div>
         </div>
       </div>

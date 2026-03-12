@@ -22,7 +22,6 @@ export async function POST(req: Request) {
         acc + item.price * item.quantity, 0
     );
 
-    // Crear la orden en la DB
     const order = await prisma.order.create({
       data: {
         userId: null,
@@ -61,7 +60,10 @@ export async function POST(req: Request) {
       },
     });
 
-    // Crear preferencia de MercadoPago
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") 
+      || new URL(req.url).origin;
+    console.log("[CHECKOUT] baseUrl:", baseUrl);
+
     const preference = new Preference(mp);
     const response = await preference.create({
       body: {
@@ -88,19 +90,18 @@ export async function POST(req: Request) {
           picture_url: item.image ?? "",
         })),
         back_urls: {
-            success: `https://elegant-seriocomically-joetta.ngrok-free.dev/checkout/exito`,
-            failure: `https://elegant-seriocomically-joetta.ngrok-free.dev/carrito`,
-            pending: `https://elegant-seriocomically-joetta.ngrok-free.dev/pendiente`,
+          success: `${baseUrl}/checkout/exito`,
+          failure: `${baseUrl}/checkout/error`,
+          pending: `${baseUrl}/checkout/pendiente`,
         },
         auto_return: "approved",
-        notification_url: `https://elegant-seriocomically-joetta.ngrok-free.dev/api/webhooks/mercadopago`,
+        notification_url: `${baseUrl}/api/webhooks/mercadopago`,
       },
     });
 
-    // Guardar el ID de la preferencia
     await prisma.payment.update({
       where: { orderId: order.id },
-      data: { stripeSessionId: response.id }, // reutilizamos el campo
+      data: { stripeSessionId: response.id },
     });
 
     return NextResponse.json({ url: response.init_point });

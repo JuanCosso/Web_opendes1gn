@@ -78,7 +78,7 @@ h1, h2, h3, h4 {
 /* Animaciones */
 @keyframes marquee {
   from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  to { transform: translateX(-25%); }
 }
 
 @keyframes fadeUp {
