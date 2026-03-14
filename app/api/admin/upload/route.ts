@@ -1,27 +1,35 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { v2 as cloudinary } from "cloudinary";
 
-export async function GET(
-  req: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:    process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+export async function POST(req: Request) {
   try {
-    const { id } = await params;
-    const product = await prisma.product.findUnique({
-      where: { id },
-      include: {
-        images: { orderBy: { position: "asc" } },
-        category: true,
-        variants: true,
-      },
+    const formData = await req.formData();
+    const file = formData.get("file") as File | null;
+
+    if (!file)
+      return NextResponse.json({ error: "No se recibió ningún archivo" }, { status: 400 });
+
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    const result = await new Promise<{ secure_url: string }>((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream({ folder: "productos" }, (err, res) => {
+          if (err || !res) return reject(err);
+          resolve(res);
+        })
+        .end(buffer);
     });
 
-    if (!product)
-      return NextResponse.json({ error: "No encontrado" }, { status: 404 });
-
-    return NextResponse.json(product);
+    return NextResponse.json({ url: result.secure_url });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Error del servidor" }, { status: 500 });
+    console.error("[UPLOAD ERROR]", error);
+    return NextResponse.json({ error: "Error al subir imagen" }, { status: 500 });
   }
 }
