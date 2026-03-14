@@ -1,5 +1,10 @@
 import { prisma } from "@/lib/prisma";
+import { type Prisma } from "@prisma/client";
 import Link from "next/link";
+
+type ProductRow = Prisma.ProductGetPayload<{
+  include: { images: true; category: true };
+}>;
 
 export default async function ProductosAdminPage() {
   const products = await prisma.product.findMany({
@@ -12,20 +17,23 @@ export default async function ProductosAdminPage() {
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
         <div>
           <span className="block text-[12px] tracking-[3px] uppercase text-[var(--accent)] mb-2">Gestión</span>
-          <h1 className="text-[clamp(2rem,4vw,2.5rem)] font-light text-[var(--text)] italic" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <h1 className="text-[clamp(2rem,4vw,2.5rem)] font-light text-[var(--text)] italic"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}>
             Productos
           </h1>
         </div>
-        <Link href="/admin/productos/nuevo" className="btn-primary">+ Nuevo producto</Link>
+        <Link href="/admin/productos/nuevo" className="btn-primary">+ Nuevo</Link>
       </div>
 
       <div className="bg-[var(--white)] border border-[var(--border)] rounded-[var(--radius)] overflow-hidden">
         {products.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-xl font-light italic text-[var(--text-light)] mb-4" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            <p className="text-xl font-light italic text-[var(--text-light)] mb-4"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}>
               Todavía no hay productos
             </p>
-            <Link href="/admin/productos/nuevo" className="text-[12px] tracking-[3px] uppercase text-[var(--accent)] hover:text-[var(--text)] transition-colors duration-300">
+            <Link href="/admin/productos/nuevo"
+              className="text-[12px] tracking-[3px] uppercase text-[var(--accent)] hover:text-[var(--text)] transition-colors duration-300">
               Crear el primero
             </Link>
           </div>
@@ -40,7 +48,7 @@ export default async function ProductosAdminPage() {
                 </tr>
               </thead>
               <tbody>
-                {products.map((product) => (
+                {products.map((product: ProductRow) => (
                   <tr key={product.id} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--blush)]/30 transition-colors duration-300">
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
@@ -65,7 +73,8 @@ export default async function ProductosAdminPage() {
                       </span>
                     </td>
                     <td className="px-5 py-4">
-                      <Link href={`/admin/productos/${product.id}/editar`} className="text-[11px] tracking-[2px] uppercase text-[var(--accent)] hover:text-[var(--text)] transition-colors duration-300">
+                      <Link href={`/admin/productos/${product.id}/editar`}
+                        className="text-[11px] tracking-[2px] uppercase text-[var(--accent)] hover:text-[var(--text)] transition-colors duration-300">
                         Editar
                       </Link>
                     </td>
