@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { ProductCard } from "@/components/shop/ProductCard";
 
 type Image = { url: string; alt?: string };
@@ -22,20 +22,23 @@ type Props = {
 };
 
 export function ProductosClient({ products, categories }: Props) {
-  const [query, setQuery]           = useState("");
-  const [category, setCategory]     = useState("");
-  const [order, setOrder]           = useState("newest");
-  const [maxPrice, setMaxPrice]     = useState(0);
-  const [priceLimit, setPriceLimit] = useState(0);
-  const [catOpen, setCatOpen]       = useState(false);
-  const [ordOpen, setOrdOpen]       = useState(false);
-  const catRef = useRef<HTMLDivElement>(null);
-  const ordRef = useRef<HTMLDivElement>(null);
+  const [query, setQuery]               = useState("");
+  const [category, setCategory]         = useState("");
+  const [order, setOrder]               = useState("newest");
+  const [maxPrice, setMaxPrice]         = useState(0);
+  const [priceLimit, setPriceLimit]     = useState(0);
+  const [sliderValue, setSliderValue]   = useState(0); // valor "en vivo" del slider
+  const [catOpen, setCatOpen]           = useState(false);
+  const [ordOpen, setOrdOpen]           = useState(false);
+  const catRef  = useRef<HTMLDivElement>(null);
+  const ordRef  = useRef<HTMLDivElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const max = Math.max(...products.map((p) => Number(p.price)), 0);
     setMaxPrice(max);
     setPriceLimit(max);
+    setSliderValue(max);
   }, [products]);
 
   useEffect(() => {
@@ -45,6 +48,13 @@ export function ProductosClient({ products, categories }: Props) {
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  // Debounce: actualiza el filtro real 180ms después de soltar el slider
+  const handleSliderChange = useCallback((val: number) => {
+    setSliderValue(val);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => setPriceLimit(val), 180);
   }, []);
 
   const filtered = useMemo(() => {
@@ -73,7 +83,7 @@ export function ProductosClient({ products, categories }: Props) {
     "price-desc": "Mayor precio",
   };
 
-  const btnBase = "flex items-center gap-2 px-4 py-2.5 text-[11px] tracking-[2px] uppercase border transition-all duration-300 rounded-[var(--radius-sm)]";
+  const btnBase     = "flex items-center gap-2 px-4 py-2.5 text-[11px] tracking-[2px] uppercase border transition-all duration-300 rounded-[var(--radius-sm)]";
   const btnActive   = `${btnBase} bg-[var(--text)] text-[var(--cream)] border-[var(--text)]`;
   const btnInactive = `${btnBase} border-[var(--border)] text-[var(--text-light)] hover:border-[var(--accent)]/60 hover:text-[var(--text)]`;
 
@@ -105,8 +115,8 @@ export function ProductosClient({ products, categories }: Props) {
           </span>
         </div>
 
-        {/* Filtros */}
-        <div className="flex flex-wrap items-center gap-2">
+        {/* Filtros + slider en la misma fila */}
+        <div className="flex flex-wrap items-center gap-3">
 
           {/* Dropdown categorías */}
           {categories.length > 0 && (
@@ -121,15 +131,16 @@ export function ProductosClient({ products, categories }: Props) {
               </button>
               {catOpen && (
                 <div className="absolute top-full left-0 mt-1 z-20 bg-[var(--cream)] border border-[var(--border)] rounded-[var(--radius-sm)] shadow-lg min-w-[160px] py-1">
-                  {category && (
-                    <button onClick={() => { setCategory(""); setCatOpen(false); }}
-                      className="w-full text-left px-4 py-2.5 text-[11px] tracking-[2px] uppercase text-[var(--accent)] hover:bg-[var(--blush)] transition-colors flex items-center gap-2">
+                  <button
+                    onClick={() => { setCategory(""); setCatOpen(false); }}
+                    className="w-full text-left px-4 py-2.5 text-[11px] tracking-[2px] uppercase text-[var(--text-light)] hover:bg-[var(--blush)] hover:text-[var(--text)] transition-colors flex items-center justify-between">
+                    Todas
+                    {!category && (
                       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                        <path d="M18 6L6 18M6 6l12 12"/>
+                        <path d="M20 6L9 17l-5-5"/>
                       </svg>
-                      Ver todas
-                    </button>
-                  )}
+                    )}
+                  </button>
                   {categories.map((cat) => (
                     <button key={cat.id}
                       onClick={() => { setCategory(cat.slug); setCatOpen(false); }}
@@ -175,13 +186,39 @@ export function ProductosClient({ products, categories }: Props) {
             )}
           </div>
 
-          <span className="text-[11px] text-[var(--text-light)] ml-1">
+          {/* Slider precio — ancho acotado, no ocupa todo el row */}
+          {maxPrice > 0 && (
+            <div className="flex items-center gap-3 bg-[var(--white)] border border-[var(--border)] rounded-[var(--radius-sm)] px-4 py-2 w-full sm:w-72">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"
+                className="text-[var(--text-light)] flex-shrink-0">
+                <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 6v4l3 3"/>
+              </svg>
+              <input
+                type="range"
+                min={0}
+                max={maxPrice}
+                step={500}
+                value={sliderValue}
+                onChange={(e) => handleSliderChange(Number(e.target.value))}
+                className="flex-1 accent-[var(--accent)] cursor-pointer h-[2px]"
+                style={{ minWidth: 0 }}
+              />
+              <span className="text-[10px] tracking-[1px] text-[var(--text-light)] whitespace-nowrap flex-shrink-0">
+                ${sliderValue.toLocaleString("es-AR")}
+              </span>
+            </div>
+          )}
+
+          <span className="text-[11px] text-[var(--text-light)]">
             {filtered.length} {filtered.length === 1 ? "pieza" : "piezas"}
           </span>
 
           {hasFilters && (
             <button
-              onClick={() => { setQuery(""); setCategory(""); setOrder("newest"); setPriceLimit(maxPrice); }}
+              onClick={() => {
+                setQuery(""); setCategory(""); setOrder("newest");
+                setPriceLimit(maxPrice); setSliderValue(maxPrice);
+              }}
               className="ml-auto flex items-center gap-1.5 text-[10px] tracking-[2px] uppercase text-[var(--accent)] hover:text-[var(--text)] transition-colors">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M18 6L6 18M6 6l12 12"/>
@@ -190,37 +227,21 @@ export function ProductosClient({ products, categories }: Props) {
             </button>
           )}
         </div>
-
-        {/* Slider precio */}
-        {maxPrice > 0 && (
-          <div className="flex items-center gap-4">
-            <span className="text-[10px] tracking-[2px] uppercase text-[var(--text-light)] flex-shrink-0">
-              Hasta ${priceLimit.toLocaleString("es-AR")}
-            </span>
-            <input
-              type="range" min={0} max={maxPrice} step={500} value={priceLimit}
-              onChange={(e) => setPriceLimit(Number(e.target.value))}
-              className="flex-1 accent-[var(--accent)] cursor-pointer h-[3px]"
-            />
-            <span className="text-[10px] tracking-[2px] uppercase text-[var(--text-light)] flex-shrink-0">
-              ${maxPrice.toLocaleString("es-AR")}
-            </span>
-          </div>
-        )}
       </div>
 
       {/* Grilla */}
       {filtered.length === 0 ? (
-        <div className="py-24 text-center">
-          <p className="text-[14px] text-[var(--text-light)] font-light">
-            {hasFilters ? "Sin resultados para estos filtros." : "No hay productos disponibles."}
-          </p>
+        <div className="flex flex-col items-center justify-center py-24 text-center">
+          <p className="text-[13px] text-[var(--text-light)] font-light mb-2">No hay piezas con esos filtros.</p>
+          <button
+            onClick={() => { setQuery(""); setCategory(""); setOrder("newest"); setPriceLimit(maxPrice); setSliderValue(maxPrice); }}
+            className="text-[11px] tracking-[2px] uppercase text-[var(--accent)] hover:text-[var(--text)] transition-colors underline underline-offset-4">
+            Limpiar filtros
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {filtered.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {filtered.map((p) => <ProductCard key={p.id} product={p} />)}
         </div>
       )}
     </>

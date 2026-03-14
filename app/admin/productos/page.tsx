@@ -16,7 +16,7 @@ export default async function ProductosAdminPage() {
             Productos
           </h1>
         </div>
-        <Link href="/admin/productos/nuevo" className="btn-primary">+ Nuevo</Link>
+        <Link href="/admin/productos/nuevo" className="btn-primary">+ Nuevo producto</Link>
       </div>
 
       <div className="bg-[var(--white)] border border-[var(--border)] rounded-[var(--radius)] overflow-hidden">

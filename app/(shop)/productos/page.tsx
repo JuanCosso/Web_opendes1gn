@@ -34,7 +34,7 @@ export default async function ProductosPage() {
             className="text-[clamp(2rem,4vw,3.5rem)] font-light text-[var(--text)] italic"
             style={{ fontFamily: "'Cormorant Garamond', serif" }}
           >
-            Todo
+            Prendas
           </h1>
         </div>
         <Suspense>

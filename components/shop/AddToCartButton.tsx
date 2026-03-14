@@ -16,7 +16,8 @@ const COLOR_MAP: Record<string, string> = {
   café: "#7a5230", verde: "#5a7a50", oliva: "#6b7a40", azul: "#4a6080",
   rojo: "#a03030", rosa: "#d08090", gris: "#909090", terracota: "#c46040",
   mostaza: "#c8a030", lavanda: "#9080b0", bordo: "#7a2030", burdeos: "#7a2030",
-  coral: "#d07060", naranja: "#d07030",
+  coral: "#d07060", naranja: "#d07030", jean: "#4a6a8a", denim: "#4a6a8a",
+  celeste: "#7aaed0", lila: "#b090c8", nude: "#d4b8a0", camel: "#c09060",
 };
 
 function getColorValue(name: string): string | null {
@@ -148,9 +149,9 @@ export function AddToCartButton({ product }: { product: Product }) {
                 <p className="text-[10px] tracking-[3px] uppercase text-[var(--text-light)] mb-3">Talle</p>
                 <div className="flex flex-wrap gap-1.5">
                   {sizes.map((size) => {
-                    const variant  = product.variants.find((v) => v.size === size);
-                    const active   = selectedVariant?.size === size;
-                    const noStock  = (variant?.stock ?? 0) === 0;
+                    const variant = product.variants.find((v) => v.size === size);
+                    const active  = selectedVariant?.size === size;
+                    const noStock = (variant?.stock ?? 0) === 0;
                     return (
                       <button key={size} type="button" disabled={noStock}
                         onClick={() => variant && setSelectedVariant(variant)}
@@ -167,42 +168,36 @@ export function AddToCartButton({ product }: { product: Product }) {
               </div>
             )}
 
-            {/* Colores */}
+            {/* Colores — siempre pill de texto, con swatch si hay color en el mapa */}
             {colors.length > 0 && (
               <div>
                 <p className="text-[10px] tracking-[3px] uppercase text-[var(--text-light)] mb-3">Color</p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {colors.map((color) => {
                     const variant  = product.variants.find((v) => v.color === color);
                     const active   = selectedVariant?.color === color;
                     const cssColor = getColorValue(color);
                     const noStock  = (variant?.stock ?? 0) === 0;
 
-                    if (cssColor) {
-                      return (
-                        <button key={color} type="button" disabled={noStock}
-                          onClick={() => variant && setSelectedVariant(variant)}
-                          title={color} aria-label={`Color ${color}`}
-                          className={`relative w-8 h-8 rounded-full flex-shrink-0 transition-all duration-200 ${
-                            noStock ? "opacity-30 cursor-not-allowed" : "cursor-pointer hover:scale-110"
-                          } ${active ? "ring-2 ring-offset-2 ring-[var(--accent)]" : "ring-1 ring-[var(--border)]"}`}
-                          style={{ backgroundColor: cssColor }}>
-                          {noStock && (
-                            <span className="absolute inset-0 flex items-center justify-center">
-                              <span className="w-full h-px bg-[var(--text-light)]/60 rotate-45 block" />
-                            </span>
-                          )}
-                        </button>
-                      );
-                    }
                     return (
-                      <button key={color} type="button" disabled={noStock}
+                      <button
+                        key={color}
+                        type="button"
+                        disabled={noStock}
                         onClick={() => variant && setSelectedVariant(variant)}
-                        className={`px-3 py-1.5 text-[10px] tracking-[1.5px] uppercase transition-all duration-200 rounded-[var(--radius-sm)] ${
+                        className={`flex items-center gap-1.5 px-3 py-2 text-[11px] tracking-[1.5px] uppercase transition-all duration-200 rounded-[var(--radius-sm)] ${
                           active    ? "bg-[var(--text)] text-[var(--cream)]"
-                          : noStock ? "border border-[var(--border)] text-[var(--text-light)]/35 cursor-not-allowed"
+                          : noStock ? "border border-[var(--border)] text-[var(--text-light)]/35 line-through cursor-not-allowed"
                           :           "border border-[var(--border)] text-[var(--text-light)] hover:border-[var(--text)] hover:text-[var(--text)]"
-                        }`}>
+                        }`}
+                      >
+                        {/* Swatch solo si hay color CSS */}
+                        {cssColor && (
+                          <span
+                            className="w-3 h-3 rounded-full flex-shrink-0 border border-black/10"
+                            style={{ backgroundColor: cssColor }}
+                          />
+                        )}
                         {color}
                       </button>
                     );
@@ -213,7 +208,7 @@ export function AddToCartButton({ product }: { product: Product }) {
           </div>
         )}
 
-        {/* ── GUÍA DE TALLES — reemplaza el bloque de stock ── */}
+        {/* ── GUÍA DE TALLES ── */}
         {sizes.length > 0 && (
           <p className="text-[12px] text-[var(--text-light)] font-light">
             ¿No sabés cómo medir tu talle?{" "}
@@ -230,7 +225,7 @@ export function AddToCartButton({ product }: { product: Product }) {
         {/* ── BOTÓN AGREGAR ── */}
         <button type="button" onClick={handleAdd} disabled={outOfStock}
           className={`w-full py-4 text-[12px] tracking-[3px] uppercase transition-all duration-300 ${
-            added      ? "bg-[var(--accent2)] text-[var(--white)] cursor-default"
+            added       ? "bg-[var(--accent2)] text-[var(--white)] cursor-default"
             : outOfStock ? "bg-[var(--blush)] text-[var(--text-light)]/60 cursor-not-allowed"
             :              "btn-primary"
           }`}>

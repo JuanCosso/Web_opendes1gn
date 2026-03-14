@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Preference } from "mercadopago";
 
+
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -60,7 +61,7 @@ export async function POST(req: Request) {
       },
     });
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") 
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "")
       || new URL(req.url).origin;
     console.log("[CHECKOUT] baseUrl:", baseUrl);
 

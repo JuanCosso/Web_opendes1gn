@@ -48,7 +48,7 @@ export default async function HomePage() {
         {/* Velo único sobre TODO el main — garantiza tono idéntico en todas las secciones */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: "rgba(245,240,232,0.90)", zIndex: 0 }}
+          style={{ background: "rgba(245,240,232,0.7)", zIndex: 0 }}
           aria-hidden
         />
 
@@ -103,7 +103,7 @@ export default async function HomePage() {
               style={{ animationDelay: "0.25s", animationFillMode: "both" }}
             >
               Tu prenda es única y de edición limitada, diseñada y confeccionada
-              desde cero con materiales reciclados o cuidadosamente seleccionados.
+              desde cero con materiales reciclados, cuidadosamente seleccionados.
             </p>
 
             {/* CTAs */}
