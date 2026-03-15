@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { ProductCard } from "@/components/shop/ProductCard";
 
-type Image = { url: string; alt?: string | null };
+type Image = { url: string; alt: string | null };
 type Category = { id: string; name: string; slug: string };
 type Product = {
   id: string;
