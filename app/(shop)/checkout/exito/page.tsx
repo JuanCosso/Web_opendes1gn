@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store/cart";
 import { useSearchParams } from "next/navigation";
@@ -8,14 +8,28 @@ import { WHATSAPP_NUMBER } from "@/lib/contact";
 
 function ExitoContent() {
   const clearCart = useCartStore((s) => s.clearCart);
-  const searchParams = useSearchParams();
-  const status      = searchParams.get("collection_status");
-  const externalRef = searchParams.get("external_reference");
-  const isPending   = status === "pending" || status === "in_process";
+  const searchParams  = useSearchParams();
+  const status        = searchParams.get("collection_status");
+  const externalRef   = searchParams.get("external_reference");
+  const paymentId     = searchParams.get("payment_id");
+  const isPending     = status === "pending" || status === "in_process";
+  const [confirmed, setConfirmed] = useState(false);
 
   useEffect(() => {
     clearCart();
-  }, [clearCart]);
+
+    // Fallback: confirmar el pago directamente si MP lo aprobó
+    if (status === "approved" && paymentId) {
+      fetch("/api/checkout/confirmar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentId }),
+      })
+        .then((r) => r.json())
+        .then((d) => { if (d.ok) setConfirmed(true); })
+        .catch(() => {});
+    }
+  }, [clearCart, status, paymentId]);
 
   const waMessage = externalRef
     ? `Hola! Acabo de realizar el pedido #${externalRef.slice(-8).toUpperCase()} y quería coordinar el envío.`
