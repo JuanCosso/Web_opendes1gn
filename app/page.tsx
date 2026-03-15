@@ -16,7 +16,7 @@ const MARQUEE_ITEMS = [
 ];
 
 export default async function HomePage() {
-  const latest = await prisma.product.findMany({
+  const raw = await prisma.product.findMany({
     where: { published: true },
     include: {
       images: { orderBy: { position: "asc" } },
@@ -25,6 +25,12 @@ export default async function HomePage() {
     orderBy: { createdAt: "desc" },
     take: 8,
   });
+
+  const latest = raw.map((p) => ({
+    ...p,
+    price: Number(p.price),
+    comparePrice: p.comparePrice ? Number(p.comparePrice) : null,
+  }));
 
   return (
     <>
