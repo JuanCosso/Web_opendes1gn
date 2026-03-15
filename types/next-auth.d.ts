@@ -7,4 +7,16 @@ declare module "next-auth" {
       role: string;
     } & DefaultSession["user"];
   }
+
+  // Extiende el User que llega en el callback jwt
+  interface User {
+    role?: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string;
+    role?: string;
+  }
 }
