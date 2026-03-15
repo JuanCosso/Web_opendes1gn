@@ -54,7 +54,7 @@ export default async function HomePage() {
         {/* Velo único sobre TODO el main — garantiza tono idéntico en todas las secciones */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: "rgba(245,240,232,0.90)", zIndex: 0 }}
+          style={{ background: "rgba(245,240,232,0.70)", zIndex: 0 }}
           aria-hidden
         />
 

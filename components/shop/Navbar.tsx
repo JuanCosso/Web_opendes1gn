@@ -19,7 +19,7 @@ export function Navbar() {
           aria-label="Inicio — opendes1gn"
         >
           <img
-            src="/img/logo.png"
+            src="https://res.cloudinary.com/dmndohqor/image/upload/v1773543964/Logo_crwqqe.png"
             alt=""
             aria-hidden
             style={{
