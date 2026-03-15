@@ -20,7 +20,8 @@ const COLOR_MAP: Record<string, string> = {
   celeste: "#7aaed0", lila: "#b090c8", nude: "#d4b8a0", camel: "#c09060",
 };
 
-function getColorValue(name: string): string | null {
+function getColorValue(name: string | null): string | null {
+  if (!name) return null;
   const n = name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   for (const [key, val] of Object.entries(COLOR_MAP)) {
     if (n.includes(key.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) return val;
