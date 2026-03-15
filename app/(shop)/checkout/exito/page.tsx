@@ -1,33 +1,31 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect } from "react";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store/cart";
 import { useSearchParams } from "next/navigation";
 import { WHATSAPP_NUMBER } from "@/lib/contact";
 
 function ExitoContent() {
-  const clearCart = useCartStore((s) => s.clearCart);
-  const searchParams  = useSearchParams();
-  const status        = searchParams.get("collection_status");
-  const externalRef   = searchParams.get("external_reference");
-  const paymentId     = searchParams.get("payment_id");
-  const isPending     = status === "pending" || status === "in_process";
-  const [confirmed, setConfirmed] = useState(false);
+  const clearCart    = useCartStore((s) => s.clearCart);
+  const searchParams = useSearchParams();
+
+  const status       = searchParams.get("collection_status");
+  const externalRef  = searchParams.get("external_reference");
+  // MP puede mandar el ID como payment_id o collection_id
+  const paymentId    = searchParams.get("payment_id") || searchParams.get("collection_id");
+  const isPending    = status === "pending" || status === "in_process";
 
   useEffect(() => {
     clearCart();
 
-    // Fallback: confirmar el pago directamente si MP lo aprobó
+    // Fallback: confirmar el pago en la DB apenas llega el cliente
     if (status === "approved" && paymentId) {
       fetch("/api/checkout/confirmar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ paymentId }),
-      })
-        .then((r) => r.json())
-        .then((d) => { if (d.ok) setConfirmed(true); })
-        .catch(() => {});
+        body: JSON.stringify({ paymentId, collectionId: paymentId }),
+      }).catch(() => {});
     }
   }, [clearCart, status, paymentId]);
 

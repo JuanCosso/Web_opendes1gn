@@ -32,17 +32,9 @@ export const useCartStore = create<CartStore>()(
         const existing = get().items.find(
           (i) => i.productId === item.productId && i.variantId === item.variantId
         );
-        if (existing) {
-          set((state) => ({
-            items: state.items.map((i) =>
-              i.productId === item.productId && i.variantId === item.variantId
-                ? { ...i, quantity: i.quantity + 1 }
-                : i
-            ),
-          }));
-        } else {
-          set((state) => ({ items: [...state.items, { ...item, quantity: 1 }] }));
-        }
+        // Prendas únicas — máximo 1 unidad por variante
+        if (existing) return;
+        set((state) => ({ items: [...state.items, { ...item, quantity: 1 }] }));
       },
 
       removeItem: (productId, variantId) => {
@@ -58,10 +50,12 @@ export const useCartStore = create<CartStore>()(
           get().removeItem(productId, variantId);
           return;
         }
+        // Máximo 1
+        const clamped = Math.min(quantity, 1);
         set((state) => ({
           items: state.items.map((i) =>
             i.productId === productId && i.variantId === variantId
-              ? { ...i, quantity }
+              ? { ...i, quantity: clamped }
               : i
           ),
         }));

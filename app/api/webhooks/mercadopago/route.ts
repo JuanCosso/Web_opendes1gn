@@ -5,7 +5,9 @@ import { Payment } from "mercadopago";
 
 export async function POST(req: Request) {
   try {
-    const { paymentId } = await req.json();
+    const body = await req.json();
+    // MP puede enviar el ID como payment_id o collection_id
+    const paymentId = body.paymentId || body.collectionId;
     if (!paymentId) return NextResponse.json({ ok: false });
 
     const mpPayment = new Payment(mp);
@@ -23,6 +25,7 @@ export async function POST(req: Request) {
         where: { id: orderId },
         data: { status: "CONFIRMED" },
       });
+      return NextResponse.json({ ok: true, status: "approved" });
     }
 
     return NextResponse.json({ ok: true, status: payment.status });
