@@ -75,7 +75,6 @@ export async function POST(req: Request) {
           phone: { number: guestPhone ?? "" },
           address: {
             street_name: guestStreet ?? "",
-            city: { name: guestCity ?? "" },
             zip_code: guestZip ?? "",
           },
         },
