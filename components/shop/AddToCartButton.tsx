@@ -126,7 +126,7 @@ export function AddToCartButton({ product }: { product: Product }) {
       productId: product.id, variantId: selectedVariant?.id,
       name: product.name, price: Number(product.price),
       image: product.images[0]?.url,
-      size: selectedVariant?.size, color: selectedVariant?.color,
+      size: selectedVariant?.size ?? undefined, color: selectedVariant?.color ?? undefined,
       quantity: 1, slug: product.slug,
     });
     setAdded(true);
