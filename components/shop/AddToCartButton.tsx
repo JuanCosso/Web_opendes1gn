@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useCartStore } from "@/lib/store/cart";
 
-type Variant = { id: string; size: string; color: string; stock: number };
+type Variant = { id: string; size: string | null; color: string | null; stock: number; price?: number | null };
 type Product = {
   id: string; name: string; slug: string; price: number;
   images: { url: string }[];
