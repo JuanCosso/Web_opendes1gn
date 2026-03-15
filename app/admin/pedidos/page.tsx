@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { PedidosClient } from "@/components/admin/PedidosClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function PedidosAdminPage() {
   const orders = await prisma.order.findMany({
     include: {
@@ -10,7 +12,6 @@ export default async function PedidosAdminPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  // JSON.parse/stringify convierte todos los Decimal y Date a primitivos de una vez
   const serialized = JSON.parse(JSON.stringify(orders));
 
   return <PedidosClient orders={serialized} />;
