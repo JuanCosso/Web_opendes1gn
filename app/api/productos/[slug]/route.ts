@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function GET(
   req: Request,
@@ -82,6 +83,12 @@ export async function PUT(
       include: { images: true, variants: true },
     });
 
+    // Revalidar caché de las páginas afectadas
+    revalidatePath("/productos");
+    revalidatePath(`/productos/${newSlug}`);
+    if (newSlug !== slug) revalidatePath(`/productos/${slug}`);
+    revalidatePath("/");
+
     return NextResponse.json(product);
   } catch (error) {
     console.error(error);
@@ -96,7 +103,6 @@ export async function DELETE(
   try {
     const { slug } = await params;
 
-    // Buscar el producto y ver si tiene órdenes asociadas
     const product = await prisma.product.findUnique({
       where: { slug },
       include: {
@@ -109,11 +115,13 @@ export async function DELETE(
     }
 
     if (product._count.orderItems > 0) {
-      // Tiene órdenes → solo despublicar (soft delete)
       await prisma.product.update({
         where: { slug },
         data: { published: false, featured: false },
       });
+      revalidatePath("/productos");
+      revalidatePath(`/productos/${slug}`);
+      revalidatePath("/");
       return NextResponse.json({
         ok: true,
         softDeleted: true,
@@ -121,8 +129,10 @@ export async function DELETE(
       });
     }
 
-    // Sin órdenes → eliminar físicamente
     await prisma.product.delete({ where: { slug } });
+    revalidatePath("/productos");
+    revalidatePath(`/productos/${slug}`);
+    revalidatePath("/");
     return NextResponse.json({ ok: true, softDeleted: false });
 
   } catch (error) {
