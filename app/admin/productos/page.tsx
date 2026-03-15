@@ -1,10 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { type Prisma } from "@prisma/client";
 import Link from "next/link";
 
-type ProductRow = Prisma.ProductGetPayload<{
+type ProductRow = Awaited<ReturnType<typeof prisma.product.findMany<{
   include: { images: true; category: true };
-}>;
+}>>>[number];
 
 export default async function ProductosAdminPage() {
   const products = await prisma.product.findMany({
