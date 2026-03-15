@@ -1,29 +1,28 @@
 import { Suspense } from "react";
 import { ProductosClient } from "@/components/shop/ProductosClient";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-async function getProducts() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/productos?limit=100`,
-    { cache: "no-store" }
-  );
-  if (!res.ok) return [];
-  const data = await res.json();
-  return data.products ?? [];
-}
-
-async function getCategories() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/categorias`,
-    { cache: "no-store" }
-  );
-  if (!res.ok) return [];
-  return res.json();
-}
-
 export default async function ProductosPage() {
-  const [products, categories] = await Promise.all([getProducts(), getCategories()]);
+  const [rawProducts, categories] = await Promise.all([
+    prisma.product.findMany({
+      where: { published: true },
+      include: {
+        images: { orderBy: { position: "asc" } },
+        category: true,
+      },
+      orderBy: { createdAt: "desc" },
+      take: 100,
+    }),
+    prisma.category.findMany({ orderBy: { name: "asc" } }),
+  ]);
+
+  const products = rawProducts.map((p) => ({
+    ...p,
+    price: Number(p.price),
+    comparePrice: p.comparePrice ? Number(p.comparePrice) : null,
+  }));
 
   return (
     <main className="w-full min-h-screen bg-[var(--cream)]">

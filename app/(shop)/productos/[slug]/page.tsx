@@ -3,15 +3,9 @@ import Link from "next/link";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
 import { ProductGallery } from "@/components/shop/ProductGallery";
 import { ShareButtons } from "@/components/shop/ShareButtons";
+import { prisma } from "@/lib/prisma";
 
-async function getProduct(slug: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_APP_URL}/api/productos/${slug}`,
-    { cache: "no-store" }
-  );
-  if (!res.ok) return null;
-  return res.json();
-}
+export const dynamic = "force-dynamic";
 
 export default async function ProductoPage({
   params,
@@ -19,8 +13,28 @@ export default async function ProductoPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const product = await getProduct(slug);
-  if (!product) notFound();
+
+  const raw = await prisma.product.findUnique({
+    where: { slug, published: true },
+    include: {
+      images: { orderBy: { position: "asc" } },
+      category: true,
+      variants: true,
+    },
+  });
+
+  if (!raw) notFound();
+
+  // Serializar Decimal a number
+  const product = {
+    ...raw,
+    price: Number(raw.price),
+    comparePrice: raw.comparePrice ? Number(raw.comparePrice) : null,
+    variants: raw.variants.map((v) => ({
+      ...v,
+      price: v.price ? Number(v.price) : null,
+    })),
+  };
 
   const productUrl = `${process.env.NEXT_PUBLIC_APP_URL}/productos/${slug}`;
 
@@ -60,7 +74,6 @@ export default async function ProductoPage({
           {/* ── INFO ── */}
           <div className="md:sticky md:top-10 space-y-0">
 
-            {/* Categoría */}
             {product.category && (
               <Link
                 href={`/productos?categoria=${product.category.slug}`}
@@ -70,7 +83,6 @@ export default async function ProductoPage({
               </Link>
             )}
 
-            {/* Nombre */}
             <h1
               className="text-[clamp(2rem,4vw,3rem)] font-light text-[var(--text)] leading-[1.1] mb-6"
               style={{ fontFamily: "'Cormorant Garamond', serif" }}
@@ -78,7 +90,6 @@ export default async function ProductoPage({
               {product.name}
             </h1>
 
-            {/* Precio */}
             <div className="flex items-baseline gap-4 mb-8">
               <span
                 className="text-[clamp(1.5rem,3vw,2rem)] font-light text-[var(--text)]"
@@ -93,20 +104,16 @@ export default async function ProductoPage({
               )}
             </div>
 
-            {/* Separador */}
             <div className="w-12 h-px bg-[var(--accent)]/30 mb-8" />
 
-            {/* Descripción */}
             {product.description && (
               <p className="text-[14px] leading-[1.9] text-[var(--text-light)] font-light mb-10 max-w-md">
                 {product.description}
               </p>
             )}
 
-            {/* Add to cart */}
             <AddToCartButton product={product} />
 
-            {/* Compartir */}
             <div className="mt-10 pt-8 border-t border-[var(--border)]">
               <ShareButtons url={productUrl} title={product.name} />
             </div>
