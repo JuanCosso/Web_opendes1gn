@@ -1,4 +1,4 @@
-import type { Product, Category, Order, User, ProductImage, ProductVariant } from "@prisma/client";
+import type { Product, Category, Order, User, ProductImage, ProductVariant } from "@/app/generated/prisma";
 
 export type ProductWithImages = Product & {
   images: ProductImage[];
