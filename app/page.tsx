@@ -5,6 +5,8 @@ import { Footer } from "@/components/shop/Footer";
 import { ProductCard } from "@/components/shop/ProductCard";
 import type { ProductWithImages } from "@/lib";
 
+export const dynamic = "force-dynamic";
+
 async function getLatestProducts() {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_APP_URL}/api/productos?limit=8`,

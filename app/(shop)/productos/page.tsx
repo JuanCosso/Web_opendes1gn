@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import { ProductosClient } from "@/components/shop/ProductosClient";
 
+export const dynamic = "force-dynamic";
+
 async function getProducts() {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_APP_URL}/api/productos?limit=100`,
@@ -34,7 +36,7 @@ export default async function ProductosPage() {
             className="text-[clamp(2rem,4vw,3.5rem)] font-light text-[var(--text)] italic"
             style={{ fontFamily: "'Cormorant Garamond', serif" }}
           >
-            Prendas
+            Todo
           </h1>
         </div>
         <Suspense>
